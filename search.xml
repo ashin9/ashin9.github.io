@@ -210,6 +210,18 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[Web安全—CSRF基础及利用]]></title>
+    <url>%2F2018%2F07%2F15%2FWEB%E5%AE%89%E5%85%A8%E2%80%94JSON%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[0x01 JSON注入1 定义0x02 JSON劫持0x03 Callback注入]]></content>
+      <categories>
+        <category>WEB安全</category>
+        <category>Browser端安全</category>
+      </categories>
+      <tags>
+        <tag>JSON</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Web安全—CSRF防御及绕过]]></title>
     <url>%2F2018%2F07%2F11%2FWeb%E5%AE%89%E5%85%A8%E2%80%94CSRF%E9%98%B2%E5%BE%A1%E5%8F%8A%E7%BB%95%E8%BF%87%2F</url>
     <content type="text"><![CDATA[0x01 CSRF防御验证码 缺点：验证影响用户体验 工具：web-fuzz测试工具可绕过普通验证码 检测Refer 安全性：Refer抓包可以篡改 限制session生命周期 缩短session有效时间 一次性Token 随机不可预测生产token 另外使用Token时应注意Token的保密性，尽量把敏感操作由GET改为POST，以form或AJAX形式提交，避免Token泄露。 安全性：但是必须保证Token的安全 同源策略 在前后端分离的前提下（例如使用ajax提交数据）设置不了token，可以给 cookie 新增 SameSite 属性，通过这个属性可以标记哪个 cookie 只作为同站 cookie （即第一方 cookie，不能作为第三方 cookie），既然不能作为第三方 cookie ，那么别的网站发起第三方请求时，第三方网站是收不到这个被标记关键 cookie，后面的鉴权处理就好办了。这一切都不需要做 token 生命周期的管理，也不用担心 Referer 会丢失或被中途被篡改 SameStie 有两个值：Strict 和 Lax: SameSite=Strict 严格模式，使用 SameSite=Strict 标记的 cookie 在任何情况下（包括异步请求和同步请求），都不能作为第三方 cookie。 SameSite=Lax 宽松模式，使用 SameSite=Lax 标记的 cookie 在异步请求 和 form 提交跳转的情况下，都不能作为第三方 cookie。 那么Strict和Lax的如何使用呢？ 登录态关键的 cookie 都可以设置为 Strict。 后台根据用户的登录态动态新建一个可以用于校验登录态的 cookie ，设置为 Lax ，这样的话对外推广比如微博什么的，你希望用户在微博上打开你的链接还能保持登录态。 如果你的页面有可能被第三方网站去iframe或有接口需要做jsonp ，那么都不能设置 Strict 或 Lax。 0x02 CSRF绕过-绕过RefererReferer为空 利用ftp://,http://,https://,file://,javascript:,data: 这个时候浏览器地址栏是file://开头的，如果这个HTML页面向任何http站点提交请求的话，这些请求的Referer都是空的。 例子：利用data协议 12345&lt;html&gt; &lt;body&gt; &lt;iframe src="data:text/html;base64,PGZvcm0gbWV0aG9kPXBvc3QgYWN0aW9uPWh0dHA6Ly9hLmIuY29tL2Q+PGlucHV0IHR5cGU9dGV4dCBuYW1lPSdpZCcgdmFsdWU9JzEyMycvPjwvZm9ybT48c2NyaXB0PmRvY3VtZW50LmZvcm1zWzBdLnN1Ym1pdCgpOzwvc2NyaXB0Pg=="&gt; &lt;/body&gt; &lt;/html&gt; bese64编码 解码即可看到代码 利用https协议 https向http跳转的时候Referer为空 拿一个https的webshell 1&lt;iframe src="https://xxxxx.xxxxx/attack.php"&gt; attack.php写上CSRF攻击代码 判断Referer是某域情况下绕过 比如找的csrf是xxx.com 验证的referer是验证的*.xx.com 可以找个二级域名 之后&lt;img “csrf地址”&gt; 之后在把文章地址发出去就可以伪造。 判断Referer是否存在某关键词 referer判断存在不存在google.com这个关键词 在网站新建一个google.com目录，把CSRF存放在google.com目录,即可绕过 判断Referer是否是某域名 判断了Referer开头是否以126.com以及126子域名 不验证根域名为126.com 那么可以构造子域名x.126.com.xxx.com作为蠕虫传播的载体服务器，即可绕过。]]></content>
