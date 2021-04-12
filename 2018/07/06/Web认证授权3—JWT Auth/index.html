@@ -63,15 +63,15 @@
 <meta property="og:site_name" content="ashin9&#39;s blog">
 <meta property="og:description" content="0x01 起源 在前后端分离的应用中，后端为Model层，为前端提供数据访问的API。为了保证数据安全可靠地在用户与服务端之间传输，实现服务端的认证就极为必要。  常见的服务端认证方法有：  基于Cookie的认证：session  每次请求都带上cookie，取出相应字段并与服务端进行对比，以实现身份的认证（具有CORS问题）   基于Token的认证：Json Web Toekn  请求在HT">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105809.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105857.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105949.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706110443.png">
-<meta property="og:updated_time" content="2021-04-11T02:57:03.702Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105809.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105857.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105949.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706110443.png">
+<meta property="og:updated_time" content="2021-04-12T01:08:10.899Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Web认证授权3—JWT Auth及其安全问题">
 <meta name="twitter:description" content="0x01 起源 在前后端分离的应用中，后端为Model层，为前端提供数据访问的API。为了保证数据安全可靠地在用户与服务端之间传输，实现服务端的认证就极为必要。  常见的服务端认证方法有：  基于Cookie的认证：session  每次请求都带上cookie，取出相应字段并与服务端进行对比，以实现身份的认证（具有CORS问题）   基于Token的认证：Json Web Toekn  请求在HT">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105809.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105809.png">
   <link rel="canonical" href="https://github.com/ashin9/ashin9.github.io/2018/07/06/Web认证授权3—JWT Auth/">
 
 
@@ -299,7 +299,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-11 10:57:03" itemprop="dateModified" datetime="2021-04-11T10:57:03+08:00">2021-04-11</time>
+                <time title="修改时间：2021-04-12 09:08:10" itemprop="dateModified" datetime="2021-04-12T09:08:10+08:00">2021-04-12</time>
               </span>
             
           
@@ -462,19 +462,19 @@
 <h3 id="0x04-JWT工作原理"><a href="#0x04-JWT工作原理" class="headerlink" title="0x04 JWT工作原理"></a><strong>0x04 JWT工作原理</strong></h3><ul>
 <li><strong>登录过程</strong></li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105809.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105809.png" alt></p>
 <ul>
 <li><strong>请求认证</strong></li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105857.png" alt></p>
-<p><img src="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706105949.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105857.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706105949.png" alt></p>
 <ul>
 <li><strong>1.client使用自己的账号密码发送post请求login</strong></li>
 <li><strong>2.因为首次接触，服务器会校验账号与密码是否合法，如果一致，则根据密钥生成一个token并返回</strong></li>
 <li><strong>3.Browser收到后，client收到这个token并保存在本地</strong></li>
 <li><strong>4.如果后面需要访问一个受保护的路由或资源时，只要附加上token（通常使用Header的Authorization属性）发送到服务器，然后服务器来检查这个token是否有效并作出响应即可</strong></li>
 </ul>
-<h3 id="0x05-组成结构"><a href="#0x05-组成结构" class="headerlink" title="0x05 组成结构"></a><strong>0x05 组成结构</strong></h3><p><strong><img src="https://raw.githubusercontent.com/xx-C1/MDphoto/master/secblog/20180706110443.png" alt></strong></p>
+<h3 id="0x05-组成结构"><a href="#0x05-组成结构" class="headerlink" title="0x05 组成结构"></a><strong>0x05 组成结构</strong></h3><p><strong><img src="https://raw.githubusercontent.com/ashin9/MDphoto/master/secblog/20180706110443.png" alt></strong></p>
 <h4 id="1-header"><a href="#1-header" class="headerlink" title="1 header"></a><strong>1 header</strong></h4><ul>
 <li><p>用于描述元信息，例如：产生signature的算法：</p>
 <ul>
