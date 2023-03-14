@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/ashin9/ashin9.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/ashin9/ashin9.github.io/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/ashin9/ashin9.github.io/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/ashin9/ashin9.github.io/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/ashin9/ashin9.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/ashin9/ashin9.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/ashin9/ashin9.github.io/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0x01 base64?base家族，py脚本decode：  123456789import base64 str1 &#x3D;&amp;#x27;GUYDIMZVGQ2DMN3CGRQTONJXGM3TINLGG42DGMZXGM3TINLGGY4DGNBXGYZTGNLGGY3DGNBWMU3WI&#x3D;&#x3D;&#x3D;&amp;#x27; try: 	print base64.b64decode(str1) except: 	tr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JarvisOJ-Basic-WriteUp">
+<meta property="og:url" content="https://github.com/ashin9/ashin9.github.io/2018/09/23/JarvisOJ-Basic-WriteUp/index.html">
+<meta property="og:site_name" content="Ashing&#39;s Blog">
+<meta property="og:description" content="0x01 base64?base家族，py脚本decode：  123456789import base64 str1 &#x3D;&amp;#x27;GUYDIMZVGQ2DMN3CGRQTONJXGM3TINLGG42DGMZXGM3TINLGGY4DGNBXGYZTGNLGGY3DGNBWMU3WI&#x3D;&#x3D;&#x3D;&amp;#x27; try: 	print base64.b64decode(str1) except: 	tr">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-23T11:53:20.000Z">
+<meta property="article:modified_time" content="2021-04-11T02:44:06.000Z">
+<meta property="article:author" content="Ashing">
+<meta property="article:tag" content="WriteUp">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://github.com/ashin9/ashin9.github.io/2018/09/23/JarvisOJ-Basic-WriteUp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JarvisOJ-Basic-WriteUp | Ashing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/ashin9/ashin9.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ashing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">想学的太多 懂得的太少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/ashin9/ashin9.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/ashin9/ashin9.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/ashin9/ashin9.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/ashin9/ashin9.github.io/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/ashin9/ashin9.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/ashin9/ashin9.github.io/2018/09/23/JarvisOJ-Basic-WriteUp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/ashin9/ashin9.github.io/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JarvisOJ-Basic-WriteUp
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-23 19:53:20" itemprop="dateCreated datePublished" datetime="2018-09-23T19:53:20+08:00">2018-09-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-11 10:44:06" itemprop="dateModified" datetime="2021-04-11T10:44:06+08:00">2021-04-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/ashin9/ashin9.github.io/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="0x01-base64"><a href="#0x01-base64" class="headerlink" title="0x01 base64?"></a>0x01 base64?</h4><p>base家族，py脚本decode： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64 </span><br><span class="line">str1 =<span class="string">&#x27;GUYDIMZVGQ2DMN3CGRQTONJXGM3TINLGG42DGMZXGM3TINLGGY4DGNBXGYZTGNLGGY3DGNBWMU3WI===&#x27;</span> </span><br><span class="line"><span class="keyword">try</span>: </span><br><span class="line">	<span class="built_in">print</span> base64.b64decode(str1) </span><br><span class="line"><span class="keyword">except</span>: </span><br><span class="line">	<span class="keyword">try</span>: </span><br><span class="line">		<span class="built_in">print</span> base64.b32decode(str1) </span><br><span class="line">	<span class="keyword">except</span>: </span><br><span class="line">		<span class="built_in">print</span> base64.b16decode(str1)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x02-USS-Lab"><a href="#0x02-USS-Lab" class="headerlink" title="0x02 USS Lab"></a>0x02 USS Lab</h4><p>百度谷歌一把梭</p>
+<h4 id="0x03-veryeasy"><a href="#0x03-veryeasy" class="headerlink" title="0x03 veryeasy"></a>0x03 veryeasy</h4><p>linux 命令：strings veayeasy的flag</p>
+<h4 id="0x04-段子"><a href="#0x04-段子" class="headerlink" title="0x04 段子"></a>0x04 段子</h4><p>对于不懂的，googl百度一把梭。发现棍斤拷的十六进制码的flag.</p>
+<p>棍斤拷乱码： 源于GBK字符集和Unicode字符集之间的转换问题。Unicode和老编码体系的转化过程中，肯定有一些字，用Unicode是没法表示的，Unicode官方用了一个占位符来表示这些文字，这就是：U+FFFD REPLACEMENT CHARACTER。那么U+FFFD的UTF-8编码出来，恰好是 ‘\xef\xbf\xbd’。如果这个’\xef\xbf\xbd’，重复多次。例如： ‘\xef\xbf\xbd\xef\xbf\xbd’，然后放到GBK&#x2F;CP936&#x2F;GB2312&#x2F;GB18030的环境中显示的话，一个汉字2个字节，最终的结果就是：锟斤拷——锟(0xEFBF)，斤（0xBDEF），拷（0xBFBD）。 </p>
+<p>烫烫烫乱码： 在windows平台下，ms的编译器（也就是vc带的那个）在 Debug 模式下，会把未初始化的栈内存全部填成 0xcc，用字符串来看就是”烫烫烫烫烫烫烫”，未初始化的堆内存全部填成0xcd，字符串看就是“屯屯屯屯屯屯屯屯”。也就是说出现了烫烫烫，赶紧检查初始化吧。</p>
+<h4 id="0x05-手贱"><a href="#0x05-手贱" class="headerlink" title="0x05 手贱"></a>0x05 手贱</h4><p>仔细看MD5码。发现多了一个I，删除破解MD5得flag</p>
+<h4 id="0x06美丽的实验室Logo"><a href="#0x06美丽的实验室Logo" class="headerlink" title="0x06美丽的实验室Logo"></a>0x06美丽的实验室Logo</h4><p>StegSolve一把梭得flag</p>
+<h4 id="0x07-veryeasyRSA"><a href="#0x07-veryeasyRSA" class="headerlink" title="0x07 veryeasyRSA"></a>0x07 veryeasyRSA</h4><p>RSAtool一把梭得flag</p>
+<h4 id="0x08-神秘文件"><a href="#0x08-神秘文件" class="headerlink" title="0x08 神秘文件"></a>0x08 神秘文件</h4><p>磁盘文件Linux挂载，写py脚本跑： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">flag = <span class="string">&#x27;&#x27;</span> </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">254</span>): </span><br><span class="line">  f = <span class="built_in">open</span>(<span class="built_in">str</span>(i)) </span><br><span class="line">  flag +=f.read() </span><br><span class="line">  f.close() </span><br><span class="line"><span class="built_in">print</span> flag</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x09-公倍数"><a href="#0x09-公倍数" class="headerlink" title="0x09 公倍数"></a>0x09 公倍数</h4><p>python脚本一把梭</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">flag = <span class="number">0</span> </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">3</span>,<span class="number">1000000000</span>,<span class="number">3</span>): </span><br><span class="line">	flag +=i </span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">5</span>,<span class="number">1000000000</span>,<span class="number">5</span>): </span><br><span class="line">		flag +=i </span><br><span class="line">			<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">15</span>,<span class="number">1000000000</span>,<span class="number">15</span>): </span><br><span class="line">				flag -+i </span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> flag</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x10-Easy-Crackme"><a href="#0x10-Easy-Crackme" class="headerlink" title="0x10 Easy Crackme"></a>0x10 Easy Crackme</h4><p>好吧，不会Reverse</p>
+<h4 id="0x11-Swcret"><a href="#0x11-Swcret" class="headerlink" title="0x11 Swcret"></a>0x11 Swcret</h4><p>burp抓包http头中发现Secret的flag</p>
+<h4 id="0x12-爱吃培根的出题人"><a href="#0x12-爱吃培根的出题人" class="headerlink" title="0x12 爱吃培根的出题人"></a>0x12 爱吃培根的出题人</h4><p>培根密码加密，培根加密本质是替换密码。以ab（01）替换，所以本质上所有正反两性都可以培根加解密，比如文字的正体与斜体。</p>
+<p>注意：有两个密码表。表中一个字母替换成5个字母。 所以把密文标点符号去除，每五个字母分一组。然后替换成ab：（小写字母替换成a，大写字母替换成b） <code>bacoN isone ofaMe rICaS sWEet hEart SitsA dARli nGSuC CulEn tfOoD tHAtP aIRsF lawLE</code> <code>aaaab aaaaa aaaba abbab abbaa abaaa baaab abbaa abbab baaba aabab abbab abbab aaabb</code> 对应密码表②得flag。</p>
+<h4 id="0x13-Easy-RSA"><a href="#0x13-Easy-RSA" class="headerlink" title="0x13 Easy RSA"></a>0x13 Easy RSA</h4><p>RSA tools一把梭</p>
+<h4 id="0x14-ROPGadget"><a href="#0x14-ROPGadget" class="headerlink" title="0x14 ROPGadget"></a>0x14 ROPGadget</h4><p>不会PWN</p>
+<h4 id="0x15-取证"><a href="#0x15-取证" class="headerlink" title="0x15 取证"></a>0x15 取证</h4><p>取证神器Volatility</p>
+<h4 id="0x16-Baby’s-Crack"><a href="#0x16-Baby’s-Crack" class="headerlink" title="0x16 Baby’s Crack"></a>0x16 Baby’s Crack</h4><p>不会逆向</p>
+<h4 id="0x12-Help"><a href="#0x12-Help" class="headerlink" title="0x12 Help!!"></a>0x12 Help!!</h4><p>zip伪加密，然后word.xdoc里面一张图片常规操作后无果。然后把后缀也改成zip发现一张图片的flag</p>
+<h4 id="0x13-Shellcode"><a href="#0x13-Shellcode" class="headerlink" title="0x13 Shellcode"></a>0x13 Shellcode</h4><p>shellcode不就是非法数据当做代码执行吗! </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span> </span></span><br><span class="line"><span class="type">char</span> shellcode[] = <span class="string">&quot;PYIIIIIIIIIIIIIIII7QZjAXP0A0AkAAQ2AB2BB0BBABXP8ABuJIYIhkmKzyCDq4l4FQyBlrRWEahI1tLKT16Pnk1ftLnkPvwlnkW6fhNkan5pNkgF6XPOR8T5HsCivaN19okQSPlKRLvD6DNk3uelNkpTthRXuQ9znk2jEHLK1Ja0FaXkhcTtBink4tlKUQhnvQYotqo0ylnLMTO0SDEWZahOtMwqhG8kXteksLwTdh1e8aLKsja4uQ8kavLKdLrklK0ZeL7qjKLKUTLKuQM8k9bdvDeL1qiSnR5XVIXTOyjENikrphNnrnVnhlBrzHooKOYoyok93u7tOKCNyHzBBSnguLgTcbyxlNKOYoYoMYaUTHphRL2LupQQ0htsFRTn541x3E2Se5T26PyKK8QLTddJlIZFBvyoSeUTLIkrv0oKy8ORpMmlk7Gl6DBrm8SoyoioyoaxrOqh0XwP1xu1Qw1upBbHrmrED3T34qiKOxQLTdEZOyZCaxQmRxgPUp0hpnPn4srRe8BDSo2PT7axqOCWROpophSYpnSo04u83K72Peu70hBpCsqDpF4qHIMXpLQ429k98aEaJr1BF3Ca3bIozp01IPf0Yof5GxAA&quot;</span> </span><br><span class="line"></span><br><span class="line"><span class="type">int</span> main() &#123; </span><br><span class="line">  <span class="type">int</span> (*ret)()=(<span class="type">int</span>(*)())shellcode; ret(); </span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x14-Piece-Of-Cake"><a href="#0x14-Piece-Of-Cake" class="headerlink" title="0x14 Piece Of Cake"></a>0x14 Piece Of Cake</h4><p>字符频率统计解密脚本网站一把梭，找到flag is …..</p>
+<h4 id="0x15-字符串"><a href="#0x15-字符串" class="headerlink" title="0x15 -.-字符串"></a>0x15 -.-字符串</h4><p>最简单的摩斯电码</p>
+<h4 id="0x16-德军的密码"><a href="#0x16-德军的密码" class="headerlink" title="0x16 德军的密码"></a>0x16 德军的密码</h4><p>二进制密码，py脚本跑：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#encoding:utf-8</span></span><br><span class="line"></span><br><span class="line">table = &#123;<span class="string">&#x27;A&#x27;</span>:<span class="string">&#x27;1000001&#x27;</span>,<span class="string">&#x27;N&#x27;</span>:<span class="string">&#x27;1001110&#x27;</span>, <span class="string">&#x27;B&#x27;</span>:<span class="string">&#x27;1000010&#x27;</span>,<span class="string">&#x27;O&#x27;</span>:<span class="string">&#x27;1001111&#x27;</span>, <span class="string">&#x27;C&#x27;</span>:<span class="string">&#x27;1000011&#x27;</span>,<span class="string">&#x27;P&#x27;</span>:<span class="string">&#x27;1010000&#x27;</span>, <span class="string">&#x27;D&#x27;</span>:<span class="string">&#x27;1000100&#x27;</span>,<span class="string">&#x27;Q&#x27;</span>:<span class="string">&#x27;1010001&#x27;</span>, <span class="string">&#x27;E&#x27;</span>:<span class="string">&#x27;1000101&#x27;</span>,<span class="string">&#x27;R&#x27;</span>:<span class="string">&#x27;1010010&#x27;</span>, <span class="string">&#x27;F&#x27;</span>:<span class="string">&#x27;1000110&#x27;</span>,<span class="string">&#x27;S&#x27;</span>:<span class="string">&#x27;1010011&#x27;</span>, <span class="string">&#x27;G&#x27;</span>:<span class="string">&#x27;1000111&#x27;</span>,<span class="string">&#x27;T&#x27;</span>:<span class="string">&#x27;1010100&#x27;</span>, <span class="string">&#x27;H&#x27;</span>:<span class="string">&#x27;1001000&#x27;</span>,<span class="string">&#x27;U&#x27;</span>:<span class="string">&#x27;1010101&#x27;</span>, <span class="string">&#x27;I&#x27;</span>:<span class="string">&#x27;1001001&#x27;</span>,<span class="string">&#x27;V&#x27;</span>:<span class="string">&#x27;1010110&#x27;</span>, <span class="string">&#x27;J&#x27;</span>:<span class="string">&#x27;1001010&#x27;</span>,<span class="string">&#x27;W&#x27;</span>:<span class="string">&#x27;1010111&#x27;</span>, <span class="string">&#x27;K&#x27;</span>:<span class="string">&#x27;1001011&#x27;</span>,<span class="string">&#x27;X&#x27;</span>:<span class="string">&#x27;1011000&#x27;</span>, <span class="string">&#x27;L&#x27;</span>:<span class="string">&#x27;1001100&#x27;</span>,<span class="string">&#x27;Y&#x27;</span>:<span class="string">&#x27;1011001&#x27;</span>, <span class="string">&#x27;M&#x27;</span>:<span class="string">&#x27;1001101&#x27;</span>,<span class="string">&#x27;Z&#x27;</span>:<span class="string">&#x27;1011010&#x27;</span>&#125; </span><br><span class="line">key_list=[] </span><br><span class="line">value_list=[] </span><br><span class="line"><span class="keyword">for</span> key,value <span class="keyword">in</span> table.items(): </span><br><span class="line">	key_list.append(key) </span><br><span class="line">	valuelist.append(value) </span><br><span class="line">	<span class="comment">#print keylist, value_list </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_key_of_value</span>(<span class="params">value</span>): </span><br><span class="line">	<span class="keyword">if</span> value <span class="keyword">in</span> valuelist: </span><br><span class="line">		getvalueindex = valuelist.index(value) </span><br><span class="line">		<span class="comment">#print type(keylist[getvalueindex]) </span></span><br><span class="line">		<span class="keyword">return</span> keylist[get_value_index] </span><br><span class="line">	<span class="keyword">else</span>: </span><br><span class="line">		<span class="built_in">print</span> <span class="string">&quot;你要查询的值%s不存在&quot;</span> %get_value </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">how_to</span>(<span class="params">a,b</span>): </span><br><span class="line">		<span class="keyword">if</span> a <span class="keyword">in</span> [<span class="string">&#x27;0&#x27;</span>,<span class="string">&#x27;1&#x27;</span>] <span class="keyword">and</span> b <span class="keyword">in</span> [<span class="string">&#x27;0&#x27;</span>,<span class="string">&#x27;1&#x27;</span>]: </span><br><span class="line">		<span class="keyword">if</span> a == <span class="string">&#x27;1&#x27;</span> <span class="keyword">and</span> b == <span class="string">&#x27;1&#x27;</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="string">&#x27;0&#x27;</span> </span><br><span class="line">		<span class="keyword">elif</span> a == <span class="string">&#x27;0&#x27;</span> <span class="keyword">and</span> b == <span class="string">&#x27;0&#x27;</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="string">&#x27;0&#x27;</span> </span><br><span class="line">		<span class="keyword">else</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="string">&#x27;1&#x27;</span> </span><br><span class="line">		<span class="keyword">else</span>: </span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">binturn</span>(<span class="params">arg</span>): </span><br><span class="line">	binstring = <span class="string">&#x27;&#x27;</span> </span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> arg: </span><br><span class="line">		binstring += table[i] </span><br><span class="line">		<span class="keyword">return</span> binstring </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encrypt</span>(<span class="params">plain,key</span>): </span><br><span class="line">	binkey = binturn(key) </span><br><span class="line">	binplain = bin_turn(plain) chiper = <span class="string">&#x27;&#x27;</span> </span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(binplain)==<span class="built_in">len</span>(binkey): </span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(binplain)): </span><br><span class="line">			chiper += how_to(binkey[i],binplain[i]) </span><br><span class="line">			<span class="comment">#print return chiper </span></span><br><span class="line">	<span class="keyword">else</span>: </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">chiper,key</span>): </span><br><span class="line">	binkey = bin_turn(key) </span><br><span class="line">	plain = <span class="string">&#x27;&#x27;</span> </span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(chiper)==<span class="built_in">len</span>(binkey): </span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(chiper)): </span><br><span class="line">			plain += how_to(binkey[i],chiper[i]) </span><br><span class="line">			<span class="comment">#print binkey[i] </span></span><br><span class="line">			<span class="built_in">print</span> plain </span><br><span class="line">			<span class="keyword">return</span> plain </span><br><span class="line">	<span class="keyword">else</span>: </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span> </span><br><span class="line"></span><br><span class="line">key = <span class="string">&#x27;WELCOMETOCFF&#x27;</span> </span><br><span class="line">chiper = <span class="string">&#x27;000000000000000000000000000000000000000000000000000101110000110001000000101000000001&#x27;</span> </span><br><span class="line">binplain = decrypt(chiper,key) </span><br><span class="line"><span class="built_in">print</span> <span class="built_in">type</span>(binplain) </span><br><span class="line">plain = <span class="string">&#x27;&#x27;</span> </span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="built_in">len</span>(binplain),<span class="number">7</span>): </span><br><span class="line">		plain += <span class="built_in">str</span>(get_key_of_value(binplain[i:i+<span class="number">7</span>])) </span><br><span class="line"><span class="built_in">print</span> plain</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="0x17-握手包"><a href="#0x17-握手包" class="headerlink" title="0x17 握手包"></a>0x17 握手包</h4><p>kali linux强大的wifi破解工具：Aircrack 破解前下解压kali自带的字典：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gzip -d <span class="regexp">/usr/</span>share<span class="regexp">/wordlists/</span>rockyou.txt.gz</span><br><span class="line">aircrack-ng -a2 -w <span class="regexp">/usr/</span>share<span class="regexp">/wordlists/</span>rockyou.txt ./wifi.cap</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/ashin9/ashin9.github.io/tags/WriteUp/" rel="tag"># WriteUp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ashin9/ashin9.github.io/2018/07/15/WEB%E5%AE%89%E5%85%A8%E2%80%94JSON%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/" rel="prev" title="Web安全—CSRF基础及利用">
+      <i class="fa fa-chevron-left"></i> Web安全—CSRF基础及利用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ashin9/ashin9.github.io/2018/09/26/Jarvis%20OJ%20Web%20WriteUp(1)/" rel="next" title="Jarvis OJ Web WriteUp(1)">
+      Jarvis OJ Web WriteUp(1) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x01-base64"><span class="nav-number">1.</span> <span class="nav-text">0x01 base64?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-USS-Lab"><span class="nav-number">2.</span> <span class="nav-text">0x02 USS Lab</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-veryeasy"><span class="nav-number">3.</span> <span class="nav-text">0x03 veryeasy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x04-%E6%AE%B5%E5%AD%90"><span class="nav-number">4.</span> <span class="nav-text">0x04 段子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x05-%E6%89%8B%E8%B4%B1"><span class="nav-number">5.</span> <span class="nav-text">0x05 手贱</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x06%E7%BE%8E%E4%B8%BD%E7%9A%84%E5%AE%9E%E9%AA%8C%E5%AE%A4Logo"><span class="nav-number">6.</span> <span class="nav-text">0x06美丽的实验室Logo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x07-veryeasyRSA"><span class="nav-number">7.</span> <span class="nav-text">0x07 veryeasyRSA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x08-%E7%A5%9E%E7%A7%98%E6%96%87%E4%BB%B6"><span class="nav-number">8.</span> <span class="nav-text">0x08 神秘文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x09-%E5%85%AC%E5%80%8D%E6%95%B0"><span class="nav-number">9.</span> <span class="nav-text">0x09 公倍数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x10-Easy-Crackme"><span class="nav-number">10.</span> <span class="nav-text">0x10 Easy Crackme</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x11-Swcret"><span class="nav-number">11.</span> <span class="nav-text">0x11 Swcret</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x12-%E7%88%B1%E5%90%83%E5%9F%B9%E6%A0%B9%E7%9A%84%E5%87%BA%E9%A2%98%E4%BA%BA"><span class="nav-number">12.</span> <span class="nav-text">0x12 爱吃培根的出题人</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x13-Easy-RSA"><span class="nav-number">13.</span> <span class="nav-text">0x13 Easy RSA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x14-ROPGadget"><span class="nav-number">14.</span> <span class="nav-text">0x14 ROPGadget</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x15-%E5%8F%96%E8%AF%81"><span class="nav-number">15.</span> <span class="nav-text">0x15 取证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x16-Baby%E2%80%99s-Crack"><span class="nav-number">16.</span> <span class="nav-text">0x16 Baby’s Crack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x12-Help"><span class="nav-number">17.</span> <span class="nav-text">0x12 Help!!</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x13-Shellcode"><span class="nav-number">18.</span> <span class="nav-text">0x13 Shellcode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x14-Piece-Of-Cake"><span class="nav-number">19.</span> <span class="nav-text">0x14 Piece Of Cake</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x15-%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">20.</span> <span class="nav-text">0x15 -.-字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x16-%E5%BE%B7%E5%86%9B%E7%9A%84%E5%AF%86%E7%A0%81"><span class="nav-number">21.</span> <span class="nav-text">0x16 德军的密码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x17-%E6%8F%A1%E6%89%8B%E5%8C%85"><span class="nav-number">22.</span> <span class="nav-text">0x17 握手包</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ashing"
+      src="/ashin9/ashin9.github.io/images/dxx.jpg">
+  <p class="site-author-name" itemprop="name">Ashing</p>
+  <div class="site-description" itemprop="description">Cyber Security</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/ashin9/ashin9.github.io/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/ashin9/ashin9.github.io/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/ashin9/ashin9.github.io/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ashin9" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ashin9"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ashin9@foxmail.com" title="E-Mail → mailto:ashin9@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://ttonys.github.io/" title="https:&#x2F;&#x2F;ttonys.github.io&#x2F;" rel="noopener" target="_blank">tongs</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://j0k3r.top/" title="http:&#x2F;&#x2F;j0k3r.top&#x2F;" rel="noopener" target="_blank">joker</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://daolgts.github.io/" title="https:&#x2F;&#x2F;daolgts.github.io" rel="noopener" target="_blank">daolgts</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzt.ac.cn/" title="https:&#x2F;&#x2F;wzt.ac.cn&#x2F;" rel="noopener" target="_blank">CataLpa</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://asa9ao.xyz/" title="http:&#x2F;&#x2F;asa9ao.xyz&#x2F;" rel="noopener" target="_blank">Asa9ao</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://v0w.top/" title="https:&#x2F;&#x2F;v0w.top" rel="noopener" target="_blank">vOw</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ashing</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/ashin9/ashin9.github.io/lib/anime.min.js"></script>
+  <script src="/ashin9/ashin9.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/ashin9/ashin9.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/ashin9/ashin9.github.io/js/utils.js"></script>
+
+<script src="/ashin9/ashin9.github.io/js/motion.js"></script>
+
+
+<script src="/ashin9/ashin9.github.io/js/schemes/pisces.js"></script>
+
+
+<script src="/ashin9/ashin9.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

