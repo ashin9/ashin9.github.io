@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="去年的题目，现在仍然开着：http:&#x2F;&#x2F;116.85.48.107:5000&#x2F;b942f830cf97e&#x2F;分析一遍代码感觉对区块链又加深了理解。下一步自己尝试写一写题意：银行发行了100W的DDB，黑客append两个区块转给自己99W9999。让我们找回钱并且在商店花200W买两个钻石。   0x01 信息收集把首页杂乱的信息整理  得到信息：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018DDCTF-mini-blockchain分析">
+<meta property="og:url" content="https://ashin9.github.io/2019/03/07/%E5%8C%BA%E5%9D%97%E9%93%BE-2018DDCTF-mini-blockchain-%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Ashing&#39;s Blog">
+<meta property="og:description" content="去年的题目，现在仍然开着：http:&#x2F;&#x2F;116.85.48.107:5000&#x2F;b942f830cf97e&#x2F;分析一遍代码感觉对区块链又加深了理解。下一步自己尝试写一写题意：银行发行了100W的DDB，黑客append两个区块转给自己99W9999。让我们找回钱并且在商店花200W买两个钻石。   0x01 信息收集把首页杂乱的信息整理  得到信息：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214258.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214737.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214917.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215040.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20170317215314.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215444.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215512.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215811.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220531.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220613.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220705.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220759.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220912.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221013.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221104.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20210410221439.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221513.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221607.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221645.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221707.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221755.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221828.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221911.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221944.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222047.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222122.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222156.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222231.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222305.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222340.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222409.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222441.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222513.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222542.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222630.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222717.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222752.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222839.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222900.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222951.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223045.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190319223146.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223222.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223317.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223351.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223437.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223636.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223716.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223806.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223836.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223905.png">
+<meta property="article:published_time" content="2019-03-07T09:56:36.000Z">
+<meta property="article:modified_time" content="2023-03-15T01:08:05.820Z">
+<meta property="article:author" content="Ashing">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214258.png">
+
+<link rel="canonical" href="https://ashin9.github.io/2019/03/07/%E5%8C%BA%E5%9D%97%E9%93%BE-2018DDCTF-mini-blockchain-%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2018DDCTF-mini-blockchain分析 | Ashing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ashing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">想学的太多 懂得的太少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/03/07/%E5%8C%BA%E5%9D%97%E9%93%BE-2018DDCTF-mini-blockchain-%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2018DDCTF-mini-blockchain分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-07 17:56:36" itemprop="dateCreated datePublished" datetime="2019-03-07T17:56:36+08:00">2019-03-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-15 09:08:05" itemprop="dateModified" datetime="2023-03-15T09:08:05+08:00">2023-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>去年的题目，现在仍然开着：<a target="_blank" rel="noopener" href="http://116.85.48.107:5000/b942f830cf97e/">http://116.85.48.107:5000/b942f830cf97e/</a><br>分析一遍代码感觉对区块链又加深了理解。下一步自己尝试写一写<br>题意：银行发行了100W的DDB，黑客append两个区块转给自己99W9999。让我们找回钱并且在商店花200W买两个钻石。  </p>
+<h3 id="0x01-信息收集"><a href="#0x01-信息收集" class="headerlink" title="0x01 信息收集"></a>0x01 信息收集</h3><p>把首页杂乱的信息整理</p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214258.png"></p>
+<p>得到信息：</p>
+<ul>
+<li>创世区块地址</li>
+<li>银行地址及资金：1</li>
+<li>黑客地址及资金：999999</li>
+<li>商店地址及资金：0</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214737.png"></p>
+<p>得到信息：</p>
+<ul>
+<li>UTXO-1：向黑客地址转资金999999</li>
+<li>UTXO-2：向银行地址转资金1</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317214917.png"></p>
+<p>得到信息：</p>
+<ul>
+<li>创世区块高度为0，资金100w</li>
+<li>黑客append空块，高度为2</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215040.png"></p>
+<p>得到信息：</p>
+<ul>
+<li>黑客把银行地址100w资金转到高度1的区块99w9999，转到银行地址1。并留下一句：HAHA，IM THE BANK NOW!</li>
+</ul>
+<h3 id="0x02-源码分析"><a href="#0x02-源码分析" class="headerlink" title="0x02 源码分析"></a>0x02 源码分析</h3><p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20170317215314.png"></p>
+<ul>
+<li>Flask框架，默认url：&#x2F;b942f830cf97e</li>
+<li>FLAG()函数，返回FLAG</li>
+</ul>
+<p>查看路由信息：</p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215444.png"></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215512.png"></p>
+<ul>
+<li>默认路径下展示homepage</li>
+<li>get_balance_all()输出所有账户余额UTXO，及整个函数返回：创世区块、地址、UTXO、区块链、查看源码的信息</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317215811.png"></p>
+<ul>
+<li>&#x2F;flag路径下，如果你的钻石&gt;&#x3D;2调用FALG()函数输出flag。否则输出钻石不够要向商店地址转100W才得到一个钻石</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220531.png"></p>
+<ul>
+<li><p>&#x2F;5ecr3t_free_D1diCoin_b@ckD00r&#x2F;<a href="string:address">string:address</a>路径下，可以在银行地址向指定地址转账。尝试一下：</p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220613.png"></p>
+</li>
+<li><p>我们可以在这里知道转账的代码，可以模仿写出自己的转账代码。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220705.png"></p>
+<ul>
+<li>&#x2F;create_transaction路径POST访问创建交易，尝试一下。看来只能用脚本了。。。怪不得题目建议用脚本。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220759.png"></p>
+<ul>
+<li>然后我们可以看出代码意思：如果商店地址有100W则给你一个钻石，然后立马把商店地址的100W转到商店钱包。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317220912.png"></p>
+<ul>
+<li>&#x2F;reset路径,如果把链搞砸了可以重置区块链</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221013.png"></p>
+<ul>
+<li><p>&#x2F;source_code路径，可以查看源码</p>
+</li>
+<li><p>在我们看路由的时候发现了很重要的信息：工作量证明难度要求hash值00000开头</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221104.png"></p>
+<h5 id="然后审计具体函数："><a href="#然后审计具体函数：" class="headerlink" title="然后审计具体函数："></a>然后审计具体函数：</h5><p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20210410221439.png"></p>
+<ul>
+<li>计算参数hash摘要信息。而且是先md5再sha256,更加加固了信息摘要安全性。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221513.png"></p>
+<ul>
+<li><p>哈希运算，我们定位使用该函数的地方，可以看到是python的reduce()函数调用，该函数是对第一个参数(函数)运算后的值与第二个参数运算。在区块链中应该是来更容易计算：父区块hash+本区块hash+随机数</p>
+</li>
+<li><p>reduce函数使用规则可以参考一下链接：<a target="_blank" rel="noopener" href="http://www.runoob.com/python/python-func-reduce.html">http://www.runoob.com/python/python-func-reduce.html</a></p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221607.png"></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221645.png"></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221707.png"></p>
+<ul>
+<li>定位调用reduce的函数找到，这三个函数直接返回reduce函数的计算值，来计算UTXO、TX、Block的hash值。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221755.png"></p>
+<ul>
+<li><p>来限制格式必须是字典容器模型格式或JSON格式，如果attrs参数中所有值有没在d参数中的则抛出异常。</p>
+</li>
+<li><p>定位一下使用has_attrs()函数的地方:</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221828.png"></p>
+<ul>
+<li>在添加块中要求block必须有三元素：前一区块hash值、nonce值、汇报</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221911.png"></p>
+<ul>
+<li>在交易中必须有：输入、输出、签名</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317221944.png"></p>
+<ul>
+<li><p>在UTXO中必须有：资金数量、地址、id值</p>
+</li>
+<li><p>所以我们可以知道各个字段的包含关系：</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222047.png"></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222122.png"></p>
+<ul>
+<li>常量hash值，64个0。在计算hash值得时候用到</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222156.png"></p>
+<ul>
+<li>在python中验证一下字符串*数字结果。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222231.png"></p>
+<ul>
+<li>地址是N，65537是e，返回地址的私钥d（RSA参数，不懂可百度）来验证。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222305.png"></p>
+<ul>
+<li>生成钱包地址(公钥)及私钥。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222340.png"></p>
+<ul>
+<li>签名函数，把交易信息用私钥加密得到签名摘要。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222409.png"></p>
+<ul>
+<li>创建一个交易输出，参数为目的地址和资金数量</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222441.png"></p>
+<ul>
+<li>创建一个交易，其中签名为把交易id通过私钥加密</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222513.png"></p>
+<ul>
+<li>创建一个区块，包括三要素：前一区块hash值、nonce值、汇报。前一区块hash值必须是16进制且限制nonce长度要小于128。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222542.png"></p>
+<ul>
+<li>查找区块链中最后一个区块,返回其高度？</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222630.png"></p>
+<ul>
+<li>获取所有UTXO信息</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222717.png"></p>
+<ul>
+<li>计算钱包的余额。默认三个地址都为0，循环累加UTXO中每个地址的资金，返回各个地址的余额。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222752.png"></p>
+<ul>
+<li>验证UTXO签名。其实就是rsa的解密过程。签名为密文，地址为公钥，解密算出明文（信息摘要）正确，则证明了是交易人地址验证签名正确。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222839.png"></p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222900.png"></p>
+<ul>
+<li>添加区块，过程略微复杂，主要是验证添加的区块是否满足规范，否则抛出异常。大致过程如下：<ul>
+<li>1.验证三要素。(第三要素”交易”又有输入、输出（输出即UTXO又包含id值、资金数量、地址）、签名)。包括验证输出要小于输入等等可能出现问题的地方。</li>
+<li>2.创建区块（包含三要素），产生区块hash。保证区块hash值满足规范但又小于difficulty值。</li>
+<li>3.区块链高度加一，且长度不能超过50。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317222951.png"></p>
+<ul>
+<li>设置session，有区块和我们的钻石数。首先产生创世区块100W资金，然后银行被黑客添加区块转账99W9999，黑客又添加了空块。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223045.png"></p>
+<ul>
+<li>得到所有信息函数。在主页调用了，我们看到的主页信息就是调用了该函数。</li>
+</ul>
+<h3 id="0x03-构造思路"><a href="#0x03-构造思路" class="headerlink" title="0x03 构造思路"></a>0x03 构造思路</h3><p>由于没有别人来挖矿（添加区块）即我们拥有100%算力。可以结合51%算力攻击，我们可以随意添加区块来改变主链方向。同时也可利用双花攻击来达到双次花费。</p>
+<ul>
+<li>初始信息：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190319223146.png"></p>
+<ul>
+<li>通过append区块把钱找回：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223222.png"></p>
+<ul>
+<li>同时我们关注代码部分，shop会立即把钱转到shop钱包</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223317.png"></p>
+<ul>
+<li>即目前情况为：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223351.png"></p>
+<ul>
+<li>那么我们就可以再次分叉来发动双花攻击了。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223437.png"></p>
+<ul>
+<li>此时主链已经成为：1-2(2)-3(2)-4(2)-5(3)-6(3)已经覆盖shop把钱转到自己钱包，100W又到了shop所有又获得1个钻石。</li>
+</ul>
+<h3 id="0x04-payload脚本"><a href="#0x04-payload脚本" class="headerlink" title="0x04 payload脚本"></a>0x04 payload脚本</h3><ul>
+<li>参考：一叶飘零师傅</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223548.png"></p>
+<ul>
+<li>获取初始session，抓取主页信息。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223636.png"></p>
+<ul>
+<li>贴一下源码中的函数及常量，以便我们使用。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223716.png"></p>
+<ul>
+<li>写好挖矿脚本，爆破遍历nonce满足小于difficulty且’00000’开头</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223806.png"></p>
+<ul>
+<li>添加第一个自己的区块，注意header的构造：添加Content-Type为json。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223836.png"></p>
+<ul>
+<li>按照思路逐个提交构造的区块，然后再访问&#x2F;flag目录即可得到falg。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/20190317223905.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag"># 区块链</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/25/%E5%8C%BA%E5%9D%97%E9%93%BE-%E6%AF%94%E7%89%B9%E5%B8%81%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" rel="prev" title="比特币理论基础笔记">
+      <i class="fa fa-chevron-left"></i> 比特币理论基础笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/10/CTFer%E7%9A%84%E9%BB%91%E8%8B%B9%E6%9E%9C%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%BF%83%E5%BE%97/" rel="next" title="CTFer的黑苹果安装与配置心得">
+      CTFer的黑苹果安装与配置心得 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">0x01 信息收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">0x02 源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%84%B6%E5%90%8E%E5%AE%A1%E8%AE%A1%E5%85%B7%E4%BD%93%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="nav-number">2.0.1.</span> <span class="nav-text">然后审计具体函数：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E6%9E%84%E9%80%A0%E6%80%9D%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">0x03 构造思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-payload%E8%84%9A%E6%9C%AC"><span class="nav-number">4.</span> <span class="nav-text">0x04 payload脚本</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ashing"
+      src="/images/dxx.jpg">
+  <p class="site-author-name" itemprop="name">Ashing</p>
+  <div class="site-description" itemprop="description">Cyber Security</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ashin9" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ashin9" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ashin9@foxmail.com" title="E-Mail → mailto:ashin9@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://ttonys.github.io/" title="https:&#x2F;&#x2F;ttonys.github.io&#x2F;" rel="noopener" target="_blank">tongs</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://j0k3r.top/" title="http:&#x2F;&#x2F;j0k3r.top&#x2F;" rel="noopener" target="_blank">joker</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://daolgts.github.io/" title="https:&#x2F;&#x2F;daolgts.github.io" rel="noopener" target="_blank">daolgts</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzt.ac.cn/" title="https:&#x2F;&#x2F;wzt.ac.cn&#x2F;" rel="noopener" target="_blank">CataLpa</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://asa9ao.xyz/" title="http:&#x2F;&#x2F;asa9ao.xyz&#x2F;" rel="noopener" target="_blank">Asa9ao</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://v0w.top/" title="https:&#x2F;&#x2F;v0w.top" rel="noopener" target="_blank">vOw</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ashing</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0x01 浏览器的同源策略（What？）1 同源策略（Same-Origin Policy）同源策略是 Netscape 公司引入的安全策略，目前所有浏览器都会实行 SOP 策略，是浏览器最核心、最基本的安全功能 最初，它的含义是指，A 网页设置的 Cookie，B 网页不能打开，除非这两个网页 “同源” 。所谓 “同源” 指的是 “三个相同” 。  同源策略仅存在于浏览器客户端，不存在 Andr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WEB安全—SOP策略">
+<meta property="og:url" content="https://ashin9.github.io/2019/07/03/WEB%E5%AE%89%E5%85%A81%E2%80%94SOP%E7%AD%96%E7%95%A5/index.html">
+<meta property="og:site_name" content="Ashing&#39;s Blog">
+<meta property="og:description" content="0x01 浏览器的同源策略（What？）1 同源策略（Same-Origin Policy）同源策略是 Netscape 公司引入的安全策略，目前所有浏览器都会实行 SOP 策略，是浏览器最核心、最基本的安全功能 最初，它的含义是指，A 网页设置的 Cookie，B 网页不能打开，除非这两个网页 “同源” 。所谓 “同源” 指的是 “三个相同” 。  同源策略仅存在于浏览器客户端，不存在 Andr">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-03T13:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-14T13:19:33.267Z">
+<meta property="article:author" content="Ashing">
+<meta property="article:tag" content="SOP策略">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ashin9.github.io/2019/07/03/WEB%E5%AE%89%E5%85%A81%E2%80%94SOP%E7%AD%96%E7%95%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>WEB安全—SOP策略 | Ashing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ashing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">想学的太多 懂得的太少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/07/03/WEB%E5%AE%89%E5%85%A81%E2%80%94SOP%E7%AD%96%E7%95%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WEB安全—SOP策略
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-03 21:00:00" itemprop="dateCreated datePublished" datetime="2019-07-03T21:00:00+08:00">2019-07-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-14 21:19:33" itemprop="dateModified" datetime="2023-03-14T21:19:33+08:00">2023-03-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/Browser%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Browser端安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="0x01-浏览器的同源策略（What？）"><a href="#0x01-浏览器的同源策略（What？）" class="headerlink" title="0x01 浏览器的同源策略（What？）"></a>0x01 浏览器的同源策略（What？）</h3><h4 id="1-同源策略（Same-Origin-Policy）"><a href="#1-同源策略（Same-Origin-Policy）" class="headerlink" title="1 同源策略（Same-Origin Policy）"></a>1 同源策略（Same-Origin Policy）</h4><p>同源策略是 Netscape 公司引入的安全策略，目前所有浏览器都会实行 SOP 策略，是浏览器最核心、最基本的安全功能</p>
+<p>最初，它的含义是指，A 网页设置的 Cookie，B 网页不能打开，除非这两个网页 “同源” 。所谓 “同源” 指的是 “三个相同” 。</p>
+<blockquote>
+<p>同源策略仅存在于浏览器客户端，不存在 Android、iOS、NodeJS、Python、Java 等其他环境。</p>
+<p><code>flash、java applet、silverlight、googlegears</code> 等浏览器加载的第三方插件也有各自的同源策略，只是这些同源策略不属于浏览器原生的同源策略，如果有漏洞则可能被黑客利用，从而留下 XSS 攻击的后患</p>
+</blockquote>
+<h4 id="2-同源的定义"><a href="#2-同源的定义" class="headerlink" title="2 同源的定义"></a>2 同源的定义</h4><p>如果两个页面的<strong>协议、端口（如果有指定）和主机</strong>都相同，则两个页面具有相同的源。可以称为：<code>tuple</code></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tuple：协议、域名、端口  # 或者简单地叫做<span class="string">&quot;tuple&quot;</span>，即元</span><br><span class="line">“元”，是指一些事物组合在一起形成一个整体，比如（<span class="number">1</span>，<span class="number">2</span>）叫二元，（<span class="number">1</span>，<span class="number">2</span>，<span class="number">3</span>）叫三元</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>例子：判断下面给出相对<a target="_blank" rel="noopener" href="http://abc.jjp.com/app/page.html%E7%9A%84%E5%90%8C%E6%BA%90%E6%A3%80%E6%B5%8B%E7%BB%93%E6%9E%9C%EF%BC%9A">http://abc.jjp.com/app/page.html的同源检测结果：</a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>url</th>
+<th>结果</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://abc.jjp.com/app/page2.html">http://abc.jjp.com/app/page2.html</a></td>
+<td>同源</td>
+<td>只有路径不同</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://abc.jjp.com/source/page2.html">http://abc.jjp.com/source/page2.html</a></td>
+<td>同源</td>
+<td>只有路径不同</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://abc.jjp.com/app/dist/page3.html">https://abc.jjp.com/app/dist/page3.html</a></td>
+<td>不同源</td>
+<td>协议不相同</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://efg.jjp.com/app/page2.html">http://efg.jjp.com/app/page2.html</a></td>
+<td>不同源</td>
+<td>域名不相同</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://abc.jjp.com:8080/app/page2.html">http://abc.jjp.com:8080/app/page2.html</a></td>
+<td>不同源</td>
+<td>端口不相同</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>IE例外：IE 非标准的策略</p>
+<ol>
+<li>范围：两个相互之间高度互信的域名，如公司域名，不遵守同源策略的限制</li>
+<li>端口：IE 未将端口号加入到同源策略的组成部分之中，即同域名不同端口属于同源</li>
+</ol>
+</blockquote>
+<h4 id="3-源的继承"><a href="#3-源的继承" class="headerlink" title="3 源的继承"></a>3 源的继承</h4><p>被创建的窗口从创建它的脚本那里继承对应的源，如：弹窗？</p>
+<h4 id="4-源的更改"><a href="#4-源的更改" class="headerlink" title="4 源的更改"></a>4 源的更改</h4><p>同源策略认为域和子域属于不同的域，例如： <code>child1.a.com</code> 与 <code>a.com</code></p>
+<p>对于这种情况，可以在两个方面各自设置 <code>document.domain=&#39;a.com&#39;</code> 来改变其源来实现以上任意两个页面之间的通信。</p>
+<blockquote>
+<p>22 年更新：目前已被弃用，虽然一些浏览器可能仍然支持，但从标准中删除。因为它破坏了同源策略所提供的安全保护，并使浏览器中的源模型复杂化，导致互操作性问题和安全漏洞。</p>
+</blockquote>
+<h4 id="5-同源策略限制的范围"><a href="#5-同源策略限制的范围" class="headerlink" title="5 同源策略限制的范围"></a>5 同源策略限制的范围</h4><ul>
+<li><p>Cookie、LocalStorage 和 IndexDB 无法读取，localStorage、IndexedDB等数据存储会以源进行分割，每个源拥有自己独立的存储空间，一个源的 js 脚本不能对属于其他源的数据进行读写操作</p>
+</li>
+<li><p>DOM 无法获得（Document Object Model 译为文档对象模型，是HTML 和 XML 文档的编程接口）</p>
+</li>
+<li><p>Ajax 请求不能发送</p>
+</li>
+</ul>
+<h3 id="0x02-同源策略的目的（Why？）"><a href="#0x02-同源策略的目的（Why？）" class="headerlink" title="0x02 同源策略的目的（Why？）"></a>0x02 同源策略的目的（Why？）</h3><ul>
+<li>防止敏感信息泄露：A 网站是一家银行，用户登录以后，又去浏览其他网站。如果其他网站可以读取 A 网站的 Cookie，那么就会泄露用户的隐私信息（比如：存款总额）</li>
+<li>防止非授权访问：Cookie 往往保存用户的登录状态，如果用户没有退出登录，且黑客盗取了用户的 Cookie 则可以冒充用户进行任何操作（浏览器规定，提交表单不受同源政策的限制）</li>
+</ul>
+<h3 id="0x03-实现跨域读取的方案（How？）"><a href="#0x03-实现跨域读取的方案（How？）" class="headerlink" title="0x03 实现跨域读取的方案（How？）"></a>0x03 实现跨域读取的方案（How？）</h3><h4 id="为什么要实现跨域请求？"><a href="#为什么要实现跨域请求？" class="headerlink" title="为什么要实现跨域请求？"></a>为什么要实现跨域请求？</h4><p>工程服务化后，不同职责的服务分散在不同的工程中，往往这些工程的域名是不同的，但一个需求可能对应到多个服务，这时便需要调用不同服务的接口，因此会出现跨域。</p>
+<p><strong>注意</strong>：跨域请求能成功发送，服务端能接收请求并正常返回结果，只是结果被浏览器拦截了。</p>
+<h4 id="跨源网络访问"><a href="#跨源网络访问" class="headerlink" title="跨源网络访问"></a>跨源网络访问</h4><p>跨域写：通常允许。比如：链接、重定向和表单提交（因为表单提交不需要反馈数据）</p>
+<p>跨域资源嵌入：通常允许。避免跨域资源嵌入：需要确保html文档中没有允许跨域资源嵌入的标签</p>
+<p>跨域读：通常不允许。比如：在使用 XMLHttpRequest 的时候会发生跨域问题，不过通过某些方法仍可以进行跨域读</p>
+<h4 id="1-代理"><a href="#1-代理" class="headerlink" title="1 代理"></a>1 代理</h4><p>浏览器请求同源服务器，再由后者请求外部服务</p>
+<h4 id="2-JSONP"><a href="#2-JSONP" class="headerlink" title="2 JSONP"></a>2 JSONP</h4><p>简单适用，老式浏览器全部支持。思想：网页通过添加一个<code>&lt;script&gt;</code>元素，向服务器请求 JSON 数据，请求的查询字符串有一个<code>callback</code>参数，用来指定回调函数的名字；服务器收到请求后，将数据放在一个指定名字的回调函数里传回来。</p>
+<p>安全问题：JSONP 劫持</p>
+<h3 id="3-WebSocket"><a href="#3-WebSocket" class="headerlink" title="3 WebSocket"></a>3 WebSocket</h3><p>WebSocket是一种通信协议，使用<code>ws://</code>（非加密）和<code>wss://</code>（加密）作为协议前缀。该协议不实行同源政策，只要服务器支持，就可以通过它进行跨源通信。</p>
+<h4 id="4-CORS"><a href="#4-CORS" class="headerlink" title="4 CORS"></a>4 CORS</h4><p>CORS是跨源资源分享（Cross-Origin Resource Sharing）是W3C标准，是跨源 AJAX 请求的根本解决方法。相比 JSONP 只能发<code>GET</code>请求，CORS允许任何类型的请求。</p>
+<p><code>CORS</code>请求大致和<code>Ajax</code>请求类似，但是在HTTP头信息中加上了Origin字段表明请求来自哪个源。</p>
+<h4 id="5-跨窗口的跨域通信"><a href="#5-跨窗口的跨域通信" class="headerlink" title="5 跨窗口的跨域通信"></a>5 跨窗口的跨域通信</h4><ul>
+<li><p>片段识别符</p>
+</li>
+<li><p>window.name</p>
+</li>
+<li><p>window.postMessage：跨文档通信API（Cross-document messaging）</p>
+</li>
+</ul>
+<h3 id="0x04-阻止跨域读取"><a href="#0x04-阻止跨域读取" class="headerlink" title="0x04 阻止跨域读取"></a>0x04 阻止跨域读取</h3><p>避免跨域写：在发起写请求中携带一个隐藏的token，然后服务器端对这个token进行验证，多用来防范CSRF攻击</p>
+<p>避免跨域读：要保证返回给客户端的资源是不可嵌入的，不可以是上面列出的允许跨域资源嵌入的标签</p>
+<h3 id="0x05-Cookie的跨域访问控制"><a href="#0x05-Cookie的跨域访问控制" class="headerlink" title="0x05 Cookie的跨域访问控制"></a>0x05 Cookie的跨域访问控制</h3><ul>
+<li>cookies 同样只有同源网页才能共享，设置其 <code>domain、path、secure、HttpOnly</code> 属性可以来限定其访问性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>domain</td>
+<td>指定cookies对哪个域有效，cookies 只会发向该域，默认值是设置 cookie 的那个域</td>
+</tr>
+<tr>
+<td>path</td>
+<td>表示相对于 domain 的路径，只有在该路径下才能拿到cookies，默认值为 &#x2F;</td>
+</tr>
+<tr>
+<td>secure</td>
+<td>设置了该属性或者设置了 ‘secure&#x3D;true’ 表示只能在 HTTPS 连接中传递 cookies</td>
+</tr>
+<tr>
+<td>HttpOnly</td>
+<td>设置了该属性或这设置了 ‘HttpOnly&#x3D;true’ 表示 js 脚本不能读取到cookie信息</td>
+</tr>
+</tbody></table>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//</span>www.ruanyifeng.com<span class="regexp">/blog/</span><span class="number">2016</span><span class="regexp">/04/</span>same-origin-policy.html</span><br><span class="line">https:<span class="regexp">//</span>www.ruanyifeng.com<span class="regexp">/blog/</span><span class="number">2016</span><span class="regexp">/04/</span>cors.html</span><br><span class="line">https:<span class="regexp">//</span>tsejx.github.io<span class="regexp">/javascript-guidebook/</span>computer-networks<span class="regexp">/web-security/</span>same-origin-policy/</span><br><span class="line">https:<span class="regexp">//</span>wiki.wgpsec.org<span class="regexp">/knowledge/</span>web/same-origin-policy.html</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SOP%E7%AD%96%E7%95%A5/" rel="tag"># SOP策略</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/16/%E5%8C%BA%E5%9D%97%E9%93%BE-%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8EPython%E5%AE%9E%E7%8E%B0/" rel="prev" title="区块链-工作量证明Python实现">
+      <i class="fa fa-chevron-left"></i> 区块链-工作量证明Python实现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/05/WEB%E5%AE%89%E5%85%A82%E2%80%94CSP%E7%AD%96%E7%95%A5/" rel="next" title="Web安全—CSP策略">
+      Web安全—CSP策略 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%EF%BC%88What%EF%BC%9F%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">0x01 浏览器的同源策略（What？）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%EF%BC%88Same-Origin-Policy%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1 同源策略（Same-Origin Policy）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%90%8C%E6%BA%90%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.2.</span> <span class="nav-text">2 同源的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%BA%90%E7%9A%84%E7%BB%A7%E6%89%BF"><span class="nav-number">1.3.</span> <span class="nav-text">3 源的继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E6%BA%90%E7%9A%84%E6%9B%B4%E6%94%B9"><span class="nav-number">1.4.</span> <span class="nav-text">4 源的更改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E9%99%90%E5%88%B6%E7%9A%84%E8%8C%83%E5%9B%B4"><span class="nav-number">1.5.</span> <span class="nav-text">5 同源策略限制的范围</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E7%9A%84%E7%9B%AE%E7%9A%84%EF%BC%88Why%EF%BC%9F%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">0x02 同源策略的目的（Why？）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%9F%9F%E8%AF%BB%E5%8F%96%E7%9A%84%E6%96%B9%E6%A1%88%EF%BC%88How%EF%BC%9F%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">0x03 实现跨域读取的方案（How？）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">为什么要实现跨域请求？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%A8%E6%BA%90%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE"><span class="nav-number">3.2.</span> <span class="nav-text">跨源网络访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%A3%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">1 代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-JSONP"><span class="nav-number">3.4.</span> <span class="nav-text">2 JSONP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-WebSocket"><span class="nav-number">4.</span> <span class="nav-text">3 WebSocket</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-CORS"><span class="nav-number">4.1.</span> <span class="nav-text">4 CORS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E8%B7%A8%E7%AA%97%E5%8F%A3%E7%9A%84%E8%B7%A8%E5%9F%9F%E9%80%9A%E4%BF%A1"><span class="nav-number">4.2.</span> <span class="nav-text">5 跨窗口的跨域通信</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-%E9%98%BB%E6%AD%A2%E8%B7%A8%E5%9F%9F%E8%AF%BB%E5%8F%96"><span class="nav-number">5.</span> <span class="nav-text">0x04 阻止跨域读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-Cookie%E7%9A%84%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-number">6.</span> <span class="nav-text">0x05 Cookie的跨域访问控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number"></span> <span class="nav-text">Reference</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ashing"
+      src="/images/dxx.jpg">
+  <p class="site-author-name" itemprop="name">Ashing</p>
+  <div class="site-description" itemprop="description">Cyber Security</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ashin9" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ashin9" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ashin9@foxmail.com" title="E-Mail → mailto:ashin9@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://ttonys.github.io/" title="https:&#x2F;&#x2F;ttonys.github.io&#x2F;" rel="noopener" target="_blank">tongs</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://j0k3r.top/" title="http:&#x2F;&#x2F;j0k3r.top&#x2F;" rel="noopener" target="_blank">joker</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://daolgts.github.io/" title="https:&#x2F;&#x2F;daolgts.github.io" rel="noopener" target="_blank">daolgts</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzt.ac.cn/" title="https:&#x2F;&#x2F;wzt.ac.cn&#x2F;" rel="noopener" target="_blank">CataLpa</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://asa9ao.xyz/" title="http:&#x2F;&#x2F;asa9ao.xyz&#x2F;" rel="noopener" target="_blank">Asa9ao</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://v0w.top/" title="https:&#x2F;&#x2F;v0w.top" rel="noopener" target="_blank">vOw</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ashing</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

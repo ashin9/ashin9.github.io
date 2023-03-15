@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0x01 概念2008年中本聪发明比特币   微观：数字货币，其价值来源于人对其的信任和共识  宏观：去中心化的记账系统   0x02 比特币特点1.财产只受自己控制（银行可以认为你的钱不合法而收缴，而比特币只有自己的私钥控制）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="比特币理论基础笔记">
+<meta property="og:url" content="https://ashin9.github.io/2019/02/25/%E5%8C%BA%E5%9D%97%E9%93%BE-%E6%AF%94%E7%89%B9%E5%B8%81%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Ashing&#39;s Blog">
+<meta property="og:description" content="0x01 概念2008年中本聪发明比特币   微观：数字货币，其价值来源于人对其的信任和共识  宏观：去中心化的记账系统   0x02 比特币特点1.财产只受自己控制（银行可以认为你的钱不合法而收缴，而比特币只有自己的私钥控制）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084140086.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084305692.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084176333.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084191076.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084202365.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084216791.png">
+<meta property="article:published_time" content="2019-02-25T08:54:40.000Z">
+<meta property="article:modified_time" content="2023-03-15T03:48:19.410Z">
+<meta property="article:author" content="Ashing">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084140086.png">
+
+<link rel="canonical" href="https://ashin9.github.io/2019/02/25/%E5%8C%BA%E5%9D%97%E9%93%BE-%E6%AF%94%E7%89%B9%E5%B8%81%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>比特币理论基础笔记 | Ashing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ashing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">想学的太多 懂得的太少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/02/25/%E5%8C%BA%E5%9D%97%E9%93%BE-%E6%AF%94%E7%89%B9%E5%B8%81%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          比特币理论基础笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-25 16:54:40" itemprop="dateCreated datePublished" datetime="2019-02-25T16:54:40+08:00">2019-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-15 11:48:19" itemprop="dateModified" datetime="2023-03-15T11:48:19+08:00">2023-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="0x01-概念"><a href="#0x01-概念" class="headerlink" title="0x01 概念"></a>0x01 概念</h3><p>2008年中本聪发明比特币 </p>
+<ul>
+<li><p>微观：数字货币，其价值来源于人对其的信任和共识</p>
+</li>
+<li><p>宏观：去中心化的记账系统</p>
+</li>
+</ul>
+<h3 id="0x02-比特币特点"><a href="#0x02-比特币特点" class="headerlink" title="0x02 比特币特点"></a>0x02 比特币特点</h3><p>1.财产只受自己控制（银行可以认为你的钱不合法而收缴，而比特币只有自己的私钥控制） </p>
+<p>2.无通货膨胀（比特币总量2100万个不变，不会贬值） </p>
+<p>3.无假钞（共识机制） </p>
+<p>4.流通性好（点对点） </p>
+<p>5.不可篡改（去中心化） </p>
+<p>6.隐私性（无个人信息）</p>
+<h3 id="0x03-比特币原理"><a href="#0x03-比特币原理" class="headerlink" title="0x03 比特币原理"></a>0x03 比特币原理</h3><h4 id="1-账本如何验证？"><a href="#1-账本如何验证？" class="headerlink" title="1 账本如何验证？"></a><strong>1 账本如何验证？</strong></h4><ul>
+<li>①与所有人的账本一一核对（效率低，方案不通） </li>
+<li>②Hash（上一个区块的Hash+本区块信息），则只需要核对最后一个区块的hash值就可以验证账本 </li>
+<li><strong>哈希函数：</strong>MD5、SHA1、SHA256 <ul>
+<li><strong>哈希函数特点：</strong> </li>
+<li>①输出确定性：同样原始信息用同一个哈希函数总能得到相同的摘要信息 </li>
+<li>②碰撞性：原始信息任何微小的变化都会哈希出面目全非的摘要信息</li>
+<li>③单向性：从摘要信息无法逆向推算出原始信息，即单向函数 哈希函数主要用途：验证文件是否被修改</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-账户的所有权问题？"><a href="#2-账户的所有权问题？" class="headerlink" title="2 账户的所有权问题？"></a>2 账户的所有权问题？</h4><ul>
+<li><p><strong>比特币地址</strong> <strong>私钥：谁拥有私钥谁就拥有比特币地址，即拥有支付权</strong> 比特币地址和私钥是一个非对称关系，私钥通过hash运算可以得到比特币地址，但是不能通过比特币地址逆向推算私钥。 <img src="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084140086.png" alt="1551084140086"> </p>
+</li>
+<li><p><strong>账户的所有权问题变为：不泄漏私钥的情况下证明拥有某个比特币地址的私钥？</strong></p>
+<ul>
+<li><strong>答：非对称加密技术</strong> <strong>交易签名：</strong></li>
+</ul>
+</li>
+</ul>
+<p>①交易进行hash得到摘要信息</p>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084305692.png" alt="1551084305692"> </p>
+<p>②用摘要信息和私钥进行签名运算得到签名信息</p>
+<p> <img src="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084176333.png" alt="1551084176333"> </p>
+<ul>
+<li><strong>签名（加密）信息后，再广播签名信息和原始交易记录，再通过非对称密码技术验证（解密），验证通过后添加该区块。</strong></li>
+</ul>
+<p> <img src="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084191076.png" alt="1551084191076"> </p>
+<ul>
+<li><strong>签名就是加密，验证就是解密。</strong></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084202365.png" alt="1551084202365"> </p>
+<p>​    </p>
+<h4 id="3-为什么记账？"><a href="#3-为什么记账？" class="headerlink" title="3 为什么记账？"></a>3 为什么记账？</h4><ul>
+<li><p><strong>（同时也是比特币发行的过程）</strong> <strong>记账规则：</strong></p>
+<ul>
+<li>①一段时间内只有一个人可以记帐成功 </li>
+<li>②通过解决密码学难题（即工作量证明，即挖矿）竞争获得唯一记账权（直接验证hash值谁都可以记账，所以引入工作量证明机制）</li>
+<li>③其他节点复制记账结果</li>
+</ul>
+</li>
+<li><p><strong>工作量证明：</strong>通过爆破随机数，找到满足规则随机数后则得到唯一记账权<br> <img src="https://raw.githubusercontent.com/ashin9/MDPic/master/1551084216791.png" alt="1551084216791"></p>
+</li>
+</ul>
+<p>过程计算量很大，目前已经没有单独矿工挖矿。一般都是矿工组合成矿池，通过算力比来分成收益。过程非常耗电，所以从经济学角度只要有收益就会有矿工加入挖矿，最终会达到挖矿成本接近收益。</p>
+<ul>
+<li><strong>交易记录集：</strong> </li>
+<li>①收集广播中还没有被记录账本的交易 </li>
+<li>②交易的有效性验证 </li>
+<li>③添加一笔给自己转账的交易（挖矿奖励）</li>
+</ul>
+<h4 id="4-两个节点同时完成工作量证明（分叉），使用谁的区块？"><a href="#4-两个节点同时完成工作量证明（分叉），使用谁的区块？" class="headerlink" title="4 两个节点同时完成工作量证明（分叉），使用谁的区块？"></a><strong>4 两个节点同时完成工作量证明（分叉），使用谁的区块？</strong></h4><ul>
+<li><strong>共识机制（选择累计工作量最大的区块，最长的链为主链）</strong> 由于网络不确定性会产生孤块</li>
+</ul>
+<h3 id="0x04-比特币工作流程"><a href="#0x04-比特币工作流程" class="headerlink" title="0x04 比特币工作流程"></a>0x04 比特币工作流程</h3><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>节点分为：①发送节点②接收节点 </span><br><span class="line">发送节点在比特币体系里就是用于提交交易信息的用户。接收节点在比特币体系里面就是通常指矿工。 </span><br><span class="line">如果有新的交易要提交，那么发送节点就会在比特币网络进行交易信息的广播。矿工则要一直监听比特币网络里是否有交易广播。 </span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>矿工收到广播的交易信息后，需要校验这个信息的签名等内容是否合法。如果校验通过后，就需要将收到的所有交易信息按照一定的规则组装成一个数据块，也就是区块。 </span><br><span class="line"></span><br><span class="line"><span class="number">3.</span>刚刚组装的区块还只是在自己这里，还未被纳入比特币网络中正式的区块链中。 如何才能被正式纳入呢？这里就涉及到共识算法了。 因为每个矿工都可能组装了自己的区块，在每<span class="number">10</span>分钟之内，只可能有一个区块被纳入正式区块链，那么所有的矿工就要根据规则在最短的时间内使自己的区块被其它矿工认可，谁最先做到，那么谁的区块就会被正式纳入。</span><br><span class="line"></span><br><span class="line"> <span class="number">4.</span>能纳入区块链的规则就是共识算法，比特币中使用的共识算法是工作量证明法。即让所有的矿工都去寻找一个随机数，这个随机数是通过<span class="built_in">Hash</span>算法算出来的，并且算出来的随机数需要满足一定的条件才是大家认可的随机数（需要满足该随机数能使整个区块的哈希值小于目标值），谁先计算/猜到这个随机数，它的区块就能被全网接受。 </span><br><span class="line"></span><br><span class="line"><span class="number">5.</span>然后这个区块就可以纳入正式区块链，放到链条的最后面，然后各个节点再开始挖下一个区块，就这么一直接连接下去。 </span><br><span class="line"></span><br><span class="line"><span class="number">6.</span>挖到有效区块的节点可以获得奖励，这个奖励主要有<span class="number">2</span>部分组成： </span><br><span class="line">	①比特币体系约定每挖到一个有效区块奖励<span class="number">25</span>比特币。 </span><br><span class="line">	②交易手续费。（交易信息的提交节点需要以比特币形式付这一笔交易手续费）</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag"># 区块链</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/24/%E5%8C%BA%E5%9D%97%E9%93%BE-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/" rel="prev" title="区块链-理论基础整理">
+      <i class="fa fa-chevron-left"></i> 区块链-理论基础整理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/07/%E5%8C%BA%E5%9D%97%E9%93%BE-2018DDCTF-mini-blockchain-%E5%88%86%E6%9E%90/" rel="next" title="2018DDCTF-mini-blockchain分析">
+      2018DDCTF-mini-blockchain分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">0x01 概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E6%AF%94%E7%89%B9%E5%B8%81%E7%89%B9%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">0x02 比特币特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E6%AF%94%E7%89%B9%E5%B8%81%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">0x03 比特币原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%B4%A6%E6%9C%AC%E5%A6%82%E4%BD%95%E9%AA%8C%E8%AF%81%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">1 账本如何验证？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E8%B4%A6%E6%88%B7%E7%9A%84%E6%89%80%E6%9C%89%E6%9D%83%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">3.2.</span> <span class="nav-text">2 账户的所有权问题？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%B0%E8%B4%A6%EF%BC%9F"><span class="nav-number">3.3.</span> <span class="nav-text">3 为什么记账？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E4%B8%A4%E4%B8%AA%E8%8A%82%E7%82%B9%E5%90%8C%E6%97%B6%E5%AE%8C%E6%88%90%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8E%EF%BC%88%E5%88%86%E5%8F%89%EF%BC%89%EF%BC%8C%E4%BD%BF%E7%94%A8%E8%B0%81%E7%9A%84%E5%8C%BA%E5%9D%97%EF%BC%9F"><span class="nav-number">3.4.</span> <span class="nav-text">4 两个节点同时完成工作量证明（分叉），使用谁的区块？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-%E6%AF%94%E7%89%B9%E5%B8%81%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">0x04 比特币工作流程</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ashing"
+      src="/images/dxx.jpg">
+  <p class="site-author-name" itemprop="name">Ashing</p>
+  <div class="site-description" itemprop="description">Cyber Security</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ashin9" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ashin9" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ashin9@foxmail.com" title="E-Mail → mailto:ashin9@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://ttonys.github.io/" title="https:&#x2F;&#x2F;ttonys.github.io&#x2F;" rel="noopener" target="_blank">tongs</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://j0k3r.top/" title="http:&#x2F;&#x2F;j0k3r.top&#x2F;" rel="noopener" target="_blank">joker</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://daolgts.github.io/" title="https:&#x2F;&#x2F;daolgts.github.io" rel="noopener" target="_blank">daolgts</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzt.ac.cn/" title="https:&#x2F;&#x2F;wzt.ac.cn&#x2F;" rel="noopener" target="_blank">CataLpa</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://asa9ao.xyz/" title="http:&#x2F;&#x2F;asa9ao.xyz&#x2F;" rel="noopener" target="_blank">Asa9ao</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://v0w.top/" title="https:&#x2F;&#x2F;v0w.top" rel="noopener" target="_blank">vOw</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ashing</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

