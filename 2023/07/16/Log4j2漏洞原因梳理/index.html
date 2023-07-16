@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控 1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方">
+  <meta name="description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控则可注入恶意命令。 1 输入可控：相信了用户的输入 —&gt; 进入到 lo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Log4j2漏洞原因梳理">
 <meta property="og:url" content="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E6%A2%B3%E7%90%86/index.html">
 <meta property="og:site_name" content="Ashing&#39;s Blog">
-<meta property="og:description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控 1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方">
+<meta property="og:description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控则可注入恶意命令。 1 输入可控：相信了用户的输入 —&gt; 进入到 lo">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-07-16T01:23:50.000Z">
-<meta property="article:modified_time" content="2023-07-16T02:26:25.218Z">
+<meta property="article:modified_time" content="2023-07-16T02:31:53.019Z">
 <meta property="article:author" content="Ashing">
 <meta property="article:tag" content="漏洞分析">
 <meta name="twitter:card" content="summary">
@@ -191,7 +191,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-07-16 09:23:50 / 修改时间：10:26:25" itemprop="dateCreated datePublished" datetime="2023-07-16T09:23:50+08:00">2023-07-16</time>
+              <time title="创建时间：2023-07-16 09:23:50 / 修改时间：10:31:53" itemprop="dateCreated datePublished" datetime="2023-07-16T09:23:50+08:00">2023-07-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,8 +215,8 @@
 
       
         <p>并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？</p>
-<p>对于<code>$&#123;jndi:&#125;</code>格式的日志默认执行<code>JndiLoop.lookup</code>导致的RCE。日志的任何一部分插入<code>$&#123;&#125;</code>都会进行递归处理，也就是说<code>log.info/error/warn</code>等方法，如果日志内容可控</p>
-<h3 id="1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法"><a href="#1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法" class="headerlink" title="1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法"></a>1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法</h3><p>比如：登录用户名是可控输入，后台一般用日志处理相关的输入信息，如：<code>log.error(&quot;xxx, &#123;&#125;&quot;,username)</code>，可控输入能够进入 Log4j2 处理程序</p>
+<p>对于<code>$&#123;jndi:&#125;</code>格式的日志默认执行<code>JndiLoop.lookup</code>导致的RCE。日志的任何一部分插入<code>$&#123;&#125;</code>都会进行递归处理，也就是说<code>log.info/error/warn</code>等方法，如果日志内容可控则可注入恶意命令。</p>
+<h3 id="1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法"><a href="#1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法" class="headerlink" title="1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法"></a>1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法</h3><p>比如：登录用户名是可控输入，后端一般用日志处理相关的输入信息，如：<code>log.error(&quot;xxx, &#123;&#125;&quot;,username)</code>，可控输入能够进入 Log4j2 处理程序</p>
 <h3 id="2-触发条件：logIfEnabled-—-gt-进入到logMessage-输入-的方法中"><a href="#2-触发条件：logIfEnabled-—-gt-进入到logMessage-输入-的方法中" class="headerlink" title="2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中"></a>2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中</h3><p>当日志级别（调用）大于等于（intLevel 值 &lt;&#x3D; ）系统设置的<code>intLevel</code>（默认 200）的时候，log4j2才会启用日志打印</p>
 <p>调用级别越大值越小。默认调用级别（intLevel 值）：error（200）。默认时使用 OFF、log.fatal()、log.error() 才可触发记录日志</p>
 <h3 id="3-log4j2-匹配-—-gt-递归解析-—-gt-内容进入-lookup-查询"><a href="#3-log4j2-匹配-—-gt-递归解析-—-gt-内容进入-lookup-查询" class="headerlink" title="3 log4j2 匹配 —&gt; 递归解析${} —&gt; 内容进入 lookup() 查询"></a>3 log4j2 匹配 —&gt; 递归解析${} —&gt; 内容进入 lookup() 查询</h3><h4 id="MessagePatternConverter-format-匹配-内容，一旦匹配则触发替换机制"><a href="#MessagePatternConverter-format-匹配-内容，一旦匹配则触发替换机制" class="headerlink" title="MessagePatternConverter.format() 匹配 ${} 内容，一旦匹配则触发替换机制"></a>MessagePatternConverter.format() 匹配 ${} 内容，一旦匹配则触发替换机制</h4><p><code>org.apache.logging.log4j.core.pattern.MessagePatternConverter的format()</code>方法中，判断<code>noLookups</code>这个变量的值，<code>noLookups</code>默认为<code>false</code>（意思为开启JNDI格式化功能）</p>

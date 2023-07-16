@@ -188,7 +188,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-07-16 09:23:50 / 修改时间：10:26:25" itemprop="dateCreated datePublished" datetime="2023-07-16T09:23:50+08:00">2023-07-16</time>
+              <time title="创建时间：2023-07-16 09:23:50 / 修改时间：10:31:53" itemprop="dateCreated datePublished" datetime="2023-07-16T09:23:50+08:00">2023-07-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -212,8 +212,8 @@
 
       
           <p>并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？</p>
-<p>对于<code>$&#123;jndi:&#125;</code>格式的日志默认执行<code>JndiLoop.lookup</code>导致的RCE。日志的任何一部分插入<code>$&#123;&#125;</code>都会进行递归处理，也就是说<code>log.info/error/warn</code>等方法，如果日志内容可控</p>
-<h3 id="1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法"><a href="#1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法" class="headerlink" title="1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法"></a>1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法</h3><p>比如：登录用户名是可控输入，后台一般用日志处理相关的输入信息，如：<code>log.error(&quot;xxx, &#123;&#125;&quot;,username)</code>，可控输入能够进入 Log4j2 处理程序</p>
+<p>对于<code>$&#123;jndi:&#125;</code>格式的日志默认执行<code>JndiLoop.lookup</code>导致的RCE。日志的任何一部分插入<code>$&#123;&#125;</code>都会进行递归处理，也就是说<code>log.info/error/warn</code>等方法，如果日志内容可控则可注入恶意命令。</p>
+<h3 id="1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法"><a href="#1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法" class="headerlink" title="1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法"></a>1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法</h3><p>比如：登录用户名是可控输入，后端一般用日志处理相关的输入信息，如：<code>log.error(&quot;xxx, &#123;&#125;&quot;,username)</code>，可控输入能够进入 Log4j2 处理程序</p>
 <h3 id="2-触发条件：logIfEnabled-—-gt-进入到logMessage-输入-的方法中"><a href="#2-触发条件：logIfEnabled-—-gt-进入到logMessage-输入-的方法中" class="headerlink" title="2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中"></a>2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中</h3>
           <!--noindex-->
             <div class="post-button">
