@@ -23,7 +23,7 @@
   <meta name="description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控 1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Log4j2漏洞原因分析">
-<meta property="og:url" content="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/index.html">
+<meta property="og:url" content="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E6%A2%B3%E7%90%86/index.html">
 <meta property="og:site_name" content="Ashing&#39;s Blog">
 <meta property="og:description" content="并不复杂？甚至认真读了官方文档就可以发现漏洞？原理就是 log4j2 提供的正常功能？ 对于$&amp;#123;jndi:&amp;#125;格式的日志默认执行JndiLoop.lookup导致的RCE。日志的任何一部分插入$&amp;#123;&amp;#125;都会进行递归处理，也就是说log.info&#x2F;error&#x2F;warn等方法，如果日志内容可控 1 输入可控：相信了用户的输入 —&gt; 进入到 log.xx(输入)方">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="漏洞分析">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/">
+<link rel="canonical" href="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E6%A2%B3%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -167,7 +167,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E6%A2%B3%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/dxx.jpg">
