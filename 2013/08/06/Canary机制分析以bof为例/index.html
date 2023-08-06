@@ -22,8 +22,8 @@
 
   <meta name="description" content="开启Canary若发生溢出 开启与不开启对比分析Function Prlogue 多了两条命令">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ashing&#39;s Blog">
-<meta property="og:url" content="https://ashin9.github.io/2021/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/index.html">
+<meta property="og:title" content="Binary安全—Canary机制分析">
+<meta property="og:url" content="https://ashin9.github.io/2013/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/index.html">
 <meta property="og:site_name" content="Ashing&#39;s Blog">
 <meta property="og:description" content="开启Canary若发生溢出 开启与不开启对比分析Function Prlogue 多了两条命令">
 <meta property="og:locale" content="zh_CN">
@@ -39,13 +39,14 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062259617.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062300402.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062300131.png">
-<meta property="article:published_time" content="2021-08-06T08:44:17.000Z">
-<meta property="article:modified_time" content="2023-08-06T15:01:51.181Z">
+<meta property="article:published_time" content="2013-08-06T14:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-06T15:05:47.109Z">
 <meta property="article:author" content="Ashing">
+<meta property="article:tag" content="Canary">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062254697.png">
 
-<link rel="canonical" href="https://ashin9.github.io/2021/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/">
+<link rel="canonical" href="https://ashin9.github.io/2013/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/">
 
 
 <script id="page-configurations">
@@ -58,7 +59,7 @@
   };
 </script>
 
-  <title> | Ashing's Blog</title>
+  <title>Binary安全—Canary机制分析 | Ashing's Blog</title>
   
 
 
@@ -179,7 +180,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2021/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2013/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/dxx.jpg">
@@ -192,7 +193,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          Binary安全—Canary机制分析
         </h1>
 
         <div class="post-meta">
@@ -202,15 +203,24 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-08-06 16:44:17" itemprop="dateCreated datePublished" datetime="2021-08-06T16:44:17+08:00">2021-08-06</time>
+              <time title="创建时间：2013-08-06 22:00:00" itemprop="dateCreated datePublished" datetime="2013-08-06T22:00:00+08:00">2013-08-06</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-06 23:01:51" itemprop="dateModified" datetime="2023-08-06T23:01:51+08:00">2023-08-06</time>
+                <time title="修改时间：2023-08-06 23:05:47" itemprop="dateModified" datetime="2023-08-06T23:05:47+08:00">2023-08-06</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bin%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Bin安全</span></a>
+                </span>
+            </span>
 
           
 
@@ -289,19 +299,19 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Canary/" rel="tag"># Canary</a>
+          </div>
 
         
 
 
         
     <div class="post-nav">
+      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2019/11/18/Docker%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" rel="prev" title="Docker命令总结">
-      <i class="fa fa-chevron-left"></i> Docker命令总结
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E6%A2%B3%E7%90%86/" rel="next" title="Log4j2漏洞原因梳理">
-      Log4j2漏洞原因梳理 <i class="fa fa-chevron-right"></i>
+    <a href="/2018/07/01/Hello%EF%BC%8CSecurity%EF%BC%81/" rel="next" title="Hello，Security！">
+      Hello，Security！ <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -384,13 +394,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
