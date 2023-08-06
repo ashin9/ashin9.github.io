@@ -20,20 +20,32 @@
     var CONFIG = {"hostname":"ashin9.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":true},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="0x01 智能合约中的权限 合约拥有者(owner)：执行合约中所有函数 普通用户：只能调用约定范围内的函数  0x02 Solidity中函数权限 Public：函数可以被合约内部函数、继承合约、外部合约调用  Private：只能被合约内部函数调用  Internal：可以被合约内部函数以及继承合约调用  External：只能外部合约调用 注意：函数如果不限定，Solidity语言会默认设置">
+  <meta name="description" content="开启Canary若发生溢出 开启与不开启对比分析Function Prlogue 多了两条命令">
 <meta property="og:type" content="article">
-<meta property="og:title" content="以太坊-智能合约审计——权限隐患">
-<meta property="og:url" content="https://ashin9.github.io/2019/03/25/%E4%BB%A5%E5%A4%AA%E5%9D%8A-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1%E2%80%94%E2%80%94%E6%9D%83%E9%99%90%E9%9A%90%E6%82%A3/index.html">
+<meta property="og:title" content="Ashing&#39;s Blog">
+<meta property="og:url" content="https://ashin9.github.io/2021/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/index.html">
 <meta property="og:site_name" content="Ashing&#39;s Blog">
-<meta property="og:description" content="0x01 智能合约中的权限 合约拥有者(owner)：执行合约中所有函数 普通用户：只能调用约定范围内的函数  0x02 Solidity中函数权限 Public：函数可以被合约内部函数、继承合约、外部合约调用  Private：只能被合约内部函数调用  Internal：可以被合约内部函数以及继承合约调用  External：只能外部合约调用 注意：函数如果不限定，Solidity语言会默认设置">
+<meta property="og:description" content="开启Canary若发生溢出 开启与不开启对比分析Function Prlogue 多了两条命令">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-03-25T01:17:25.000Z">
-<meta property="article:modified_time" content="2023-03-15T03:47:08.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062254697.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062254976.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062255299.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062255952.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062255952.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062256180.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062257230.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062258013.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062259661.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062259617.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062300402.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062300131.png">
+<meta property="article:published_time" content="2021-08-06T08:44:17.000Z">
+<meta property="article:modified_time" content="2023-08-06T15:01:51.181Z">
 <meta property="article:author" content="Ashing">
-<meta property="article:tag" content="合约审计">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062254697.png">
 
-<link rel="canonical" href="https://ashin9.github.io/2019/03/25/%E4%BB%A5%E5%A4%AA%E5%9D%8A-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1%E2%80%94%E2%80%94%E6%9D%83%E9%99%90%E9%9A%90%E6%82%A3/">
+<link rel="canonical" href="https://ashin9.github.io/2021/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/">
 
 
 <script id="page-configurations">
@@ -46,7 +58,7 @@
   };
 </script>
 
-  <title>以太坊-智能合约审计——权限隐患 | Ashing's Blog</title>
+  <title> | Ashing's Blog</title>
   
 
 
@@ -167,7 +179,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2019/03/25/%E4%BB%A5%E5%A4%AA%E5%9D%8A-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1%E2%80%94%E2%80%94%E6%9D%83%E9%99%90%E9%9A%90%E6%82%A3/">
+    <link itemprop="mainEntityOfPage" href="https://ashin9.github.io/2021/08/06/Canary%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90%E4%BB%A5bof%E4%B8%BA%E4%BE%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/dxx.jpg">
@@ -180,7 +192,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          以太坊-智能合约审计——权限隐患
+          
         </h1>
 
         <div class="post-meta">
@@ -190,24 +202,15 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-03-25 09:17:25" itemprop="dateCreated datePublished" datetime="2019-03-25T09:17:25+08:00">2019-03-25</time>
+              <time title="创建时间：2021-08-06 16:44:17" itemprop="dateCreated datePublished" datetime="2021-08-06T16:44:17+08:00">2021-08-06</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-15 11:47:08" itemprop="dateModified" datetime="2023-03-15T11:47:08+08:00">2023-03-15</time>
+                <time title="修改时间：2023-08-06 23:01:51" itemprop="dateModified" datetime="2023-08-06T23:01:51+08:00">2023-08-06</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a>
-                </span>
-            </span>
 
           
 
@@ -220,51 +223,64 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="0x01-智能合约中的权限"><a href="#0x01-智能合约中的权限" class="headerlink" title="0x01 智能合约中的权限"></a>0x01 智能合约中的权限</h3><ul>
-<li>合约拥有者(owner)：执行合约中所有函数</li>
-<li>普通用户：只能调用约定范围内的函数</li>
+        <h2 id="开启Canary若发生溢出"><a href="#开启Canary若发生溢出" class="headerlink" title="开启Canary若发生溢出"></a>开启Canary若发生溢出</h2><p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062254697.png"></p>
+<h2 id="开启与不开启对比分析"><a href="#开启与不开启对比分析" class="headerlink" title="开启与不开启对比分析"></a>开启与不开启对比分析</h2><h3 id="Function-Prlogue"><a href="#Function-Prlogue" class="headerlink" title="Function Prlogue"></a>Function Prlogue</h3><ul>
+<li>多了两条命令</li>
 </ul>
-<h3 id="0x02-Solidity中函数权限"><a href="#0x02-Solidity中函数权限" class="headerlink" title="0x02 Solidity中函数权限"></a>0x02 Solidity中函数权限</h3><ul>
-<li><p>Public：函数可以被合约内部函数、继承合约、外部合约调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov    %fs:0x28,%rax     #从另一个segment的8byte（QWORD）数据拿出来放到rax</span><br><span class="line">mov    %rax,-0x8(%rbp)   #放到rbp减8的地方，即rbp的栈增长方向上</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062254976.png"></p>
+<ul>
+<li>运行到canary赋值后，第一个byte为’x’\00’（little-endian）</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062255299.png"></p>
+<ul>
+<li>查看Stack情况，rbp-0x8为0，执行下一步再查看栈情况</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062255952.png"></p>
+<ul>
+<li>执行一下指令，rbp-0x8位置已变为canary</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov    %rax,-0x8(%rbp)   #放到rbp减8的地方，即rbp的栈增长方向上</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062255952.png"></p>
+<h3 id="输入溢出"><a href="#输入溢出" class="headerlink" title="输入溢出"></a>输入溢出</h3><p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062256180.png"></p>
+<ul>
+<li>查看Stack情况，发现都被覆盖为0x6161….包括canary</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062257230.png"></p>
+<h3 id="Function-piloge"><a href="#Function-piloge" class="headerlink" title="Function piloge"></a>Function piloge</h3><ul>
+<li>多了几条指令</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">401264:	48 8b 55 f8          	mov    -0x8(%rbp),%rdx       					# 把放到ebp上面的canary拿出来</span><br><span class="line">401268:	64 48 33 14 25 28 00 	xor    %fs:0x28,%rdx         					# 和其他segment的它异或</span><br><span class="line">40126f:	00 00</span><br><span class="line">401271:	74 05                	je     401278 &lt;main+0xab&gt;		 					# 若为0，即相同，跳转到main </span><br><span class="line">401273:	e8 18 fe ff ff       	callq  401090 &lt;__stack_chk_fail@plt&gt;  # 否则fail</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062258013.png"></p>
+<ul>
+<li>把canary的值拿出来存放与RDX，发现已经被覆盖为0x6161…..</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062259661.png"></p>
+<ul>
+<li>执行xor，发现不一样则不会跳转，然后__stack_chk_fail报错</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062259617.png"></p>
+<h2 id="Canary真实地址"><a href="#Canary真实地址" class="headerlink" title="Canary真实地址"></a>Canary真实地址</h2><ul>
+<li>fs寄存器是执行当前栈的TLS结构，TLS（Thread Local Storage）的值由security_init初始化，每次重启后不同，同进程不同线程也是不同的，但是fork函数会copy父进程内存因此相同</li>
+<li>TLS加0x28为canary</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062300402.png"></p>
+<ul>
+<li>canary在map出来的一段，在stack前面很多，刚好在load的后面</li>
+<li>很难在stack覆盖到canary地方，除非可以任意写地址可以覆盖真实canary</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/ashin9/MDPic/master/secblog/202308062300131.png"></p>
+<h2 id="ByPass"><a href="#ByPass" class="headerlink" title="ByPass"></a>ByPass</h2><ul>
+<li><p>劫持__stack_chk_fail 函数</p>
 </li>
-<li><p>Private：只能被合约内部函数调用</p>
+<li><p>覆盖 TLS（Thread Local Storage） 中储存的 Canary 值：TLS会保存在stack高地址的地方。所以，当我们溢出足够大的字节，就可以控制TLS结构体，进而控制canary，实现ROP。</p>
 </li>
-<li><p>Internal：可以被合约内部函数以及继承合约调用</p>
-</li>
-<li><p>External：只能外部合约调用 <strong>注意：函数如果不限定，Solidity语言会默认设置函数为Public权限，也就是任何合约可以调用！</strong> HCTF的ez2win题目就是利用这个点来破解得到flag</p>
+<li><p>爆破Canary</p>
 </li>
 </ul>
-<h3 id="0x03-构造函数权限问题"><a href="#0x03-构造函数权限问题" class="headerlink" title="0x03 构造函数权限问题"></a>0x03 构造函数权限问题</h3><ul>
-<li><p>Solidity编写合约和面向对象编程语言非常相似，可以用构造函数（constructor）来初始化合约对象</p>
-</li>
-<li><p>类似C++等语言，Solidity中构造函数是方法名和合约名字相同的函数，创建合约时会调用构造函数对状态变量进行数据初始化操作</p>
-</li>
-<li><p>构造函数可用的函数类型为public或internal</p>
-</li>
-<li><p>如果构造函数带参数，必须要放在合约下的第一个函数</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.16</span><br><span class="line"></span><br><span class="line">contract Function&#123;</span><br><span class="line">    Function Function() public&#123;</span><br><span class="line">        //构造函数内容</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p> 0.4.22版本后，solidity编译器引入了constructor关键字。以替代低版本的将合约名作为构造函数名的语法，避免程序员容易出现的编码错误。使用旧写法会出现 warning 信息。</p>
-<pre><code>pragma solidity ^0.4.22
-
-contract Function&#123;
-    constructor() public&#123;
-       //初始化操作
-    &#125;
-    Function test()&#123;
-    
-        //其他函数功能性代码
-    &#125;
-    &#125;   
-</code></pre>
-<h4 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h4><p> 构造函数之所以区别于普通函数，是因为构造函数它主要用户初始化整个合约对象，而且不能被任意用户所调用，所以一旦构造函数可以被任意用户调用时，调用者就可以获得初始化合约的权限，带来安全隐患。 ​ </p>
-<h5 id="1-构造名与合约名不相同-​"><a href="#1-构造名与合约名不相同-​" class="headerlink" title="1.构造名与合约名不相同 ​"></a>1.构造名与合约名不相同 ​</h5><p>编译器0.4.22之前： ​ 构造函数的函数名默认是和合约名一致的，如果智能合约的开发者在开发过程中出现”构造函数名与合约名不一致”的现象（大小写、多加了一个s等情况），那么构造函数将不再是“构造函数”，而变为一个任意用户可以调用的普通函数，任意用户可以通过调用该函数实现对合约的初始化操作。 ​ </p>
-<h5 id="2-constructor函数不规范-​"><a href="#2-constructor函数不规范-​" class="headerlink" title="2.constructor函数不规范 ​"></a>2.constructor函数不规范 ​</h5><p>在编译器0.4.22之后： ​ 使用了constructor来替代原先的“构造函数名与合约名必须一致”的代码编写规范，但是一些合约开发者在开发工程中往往还是会出现各种错误，例如：</p>
-<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在<span class="function"><span class="keyword">constructor</span>前面加<span class="title">function</span>，或者加了<span class="title">function</span>然后开头的<span class="title">C</span>写成了大写，即“<span class="title">function</span> <span class="title">Constructor</span><span class="params">()</span><span class="comment">&#123;&#125;</span>”,这样便使得构造函数变成了公有函数，可被人任意调用。</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="0x04-普通函数权限问题"><a href="#0x04-普通函数权限问题" class="headerlink" title="0x04 普通函数权限问题"></a>0x04 普通函数权限问题</h3><p>对于一些普通函数，我们一般会使用一些修饰器来进行修饰，同时有时候也会使用public、private、internal、external来进行修饰。一些合约开发者留下“后门”，owner可以销毁任意用户的任意代币。那么如果owner被他人控制呢？</p>
 
     </div>
 
@@ -273,9 +289,6 @@ contract Function&#123;
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" rel="tag"># 合约审计</a>
-          </div>
 
         
 
@@ -283,12 +296,12 @@ contract Function&#123;
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/03/18/Docker-%E7%BB%83%E4%B9%A0-%E6%90%AD%E5%BB%BAWordpress/" rel="prev" title="Docker-练习-搭建Wordpress">
-      <i class="fa fa-chevron-left"></i> Docker-练习-搭建Wordpress
+    <a href="/2019/11/18/Docker%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/" rel="prev" title="Docker命令总结">
+      <i class="fa fa-chevron-left"></i> Docker命令总结
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/04/16/%E5%8C%BA%E5%9D%97%E9%93%BE-%E5%B7%A5%E4%BD%9C%E9%87%8F%E8%AF%81%E6%98%8EPython%E5%AE%9E%E7%8E%B0/" rel="next" title="区块链-工作量证明Python实现">
-      区块链-工作量证明Python实现 <i class="fa fa-chevron-right"></i>
+    <a href="/2023/07/16/Log4j2%E6%BC%8F%E6%B4%9E%E5%8E%9F%E5%9B%A0%E6%A2%B3%E7%90%86/" rel="next" title="Log4j2漏洞原因梳理">
+      Log4j2漏洞原因梳理 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -348,7 +361,7 @@ contract Function&#123;
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E4%B8%AD%E7%9A%84%E6%9D%83%E9%99%90"><span class="nav-number">1.</span> <span class="nav-text">0x01 智能合约中的权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-Solidity%E4%B8%AD%E5%87%BD%E6%95%B0%E6%9D%83%E9%99%90"><span class="nav-number">2.</span> <span class="nav-text">0x02 Solidity中函数权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">0x03 构造函数权限问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">安全问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%9E%84%E9%80%A0%E5%90%8D%E4%B8%8E%E5%90%88%E7%BA%A6%E5%90%8D%E4%B8%8D%E7%9B%B8%E5%90%8C-%E2%80%8B"><span class="nav-number">3.1.1.</span> <span class="nav-text">1.构造名与合约名不相同 ​</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-constructor%E5%87%BD%E6%95%B0%E4%B8%8D%E8%A7%84%E8%8C%83-%E2%80%8B"><span class="nav-number">3.1.2.</span> <span class="nav-text">2.constructor函数不规范 ​</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-%E6%99%AE%E9%80%9A%E5%87%BD%E6%95%B0%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">0x04 普通函数权限问题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AFCanary%E8%8B%A5%E5%8F%91%E7%94%9F%E6%BA%A2%E5%87%BA"><span class="nav-number">1.</span> <span class="nav-text">开启Canary若发生溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E4%B8%8E%E4%B8%8D%E5%BC%80%E5%90%AF%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">开启与不开启对比分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Function-Prlogue"><span class="nav-number">2.1.</span> <span class="nav-text">Function Prlogue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%BA%A2%E5%87%BA"><span class="nav-number">2.2.</span> <span class="nav-text">输入溢出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Function-piloge"><span class="nav-number">2.3.</span> <span class="nav-text">Function piloge</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Canary%E7%9C%9F%E5%AE%9E%E5%9C%B0%E5%9D%80"><span class="nav-number">3.</span> <span class="nav-text">Canary真实地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ByPass"><span class="nav-number">4.</span> <span class="nav-text">ByPass</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
